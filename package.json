@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "To explore the economic and commercial development of China and the world",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "vite",
     "build": "vue-tsc --noEmit && vite build",
