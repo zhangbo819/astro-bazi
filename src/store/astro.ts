@@ -14,6 +14,16 @@ export const useAstroStore = defineStore('astro', () => {
     return getAllPlanets(time.value);
   });
 
+  const fetchData = async () => {
+    const res = await fetch('/api/chart');
+
+    const data = await res.json();
+
+    console.log(data);
+  };
+
+  fetchData();
+
   //   const planetMap = computed(() => Object.fromEntries(planetList.value.map((p) => [p.name, p])));
 
   // 相位
