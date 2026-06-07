@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Chat } from '@ai-sdk/vue';
 import { DefaultChatTransport } from 'ai';
-import { ref } from 'vue';
 
 const input = ref('');
 
