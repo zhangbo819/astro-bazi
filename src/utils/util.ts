@@ -1,4 +1,5 @@
 import { getThemeColorByAstro } from './astro';
+import MarkdownIt from 'markdown-it';
 
 // 中文版本的排序
 function sortByZh(a: string, b: string, isSortUp: boolean) {
@@ -20,4 +21,13 @@ export function applyThemeColor() {
   document.documentElement.style.setProperty('--global-theme-color', themeColor);
 
   console.log(`[Theme] 当前主题色已更新为: ${themeColor}`);
+}
+
+export function renderMarkdown(text: string) {
+  const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    breaks: true,
+  });
+  return md.render(text);
 }

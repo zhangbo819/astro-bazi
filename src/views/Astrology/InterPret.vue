@@ -23,28 +23,18 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { generateInterpretation, title12 } from '@/utils/astro/astroUI';
 import { BODIES, BodyInUse, Star } from '@/utils/astro/constant';
-import MarkdownIt from 'markdown-it';
-
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  breaks: true,
-});
-
-function renderMarkdown(text: string) {
-  return md.render(text);
-}
+import { renderMarkdown } from '@/utils/util';
 
 const route = useRoute();
 const loading = ref(false);
 const result = ref('');
 
-async function runInterpret(chart: Record<string, any>) {
+async function runInterpret(chart: Record<string, any> | Record<string, any>[]) {
   loading.value = true;
 
   const res = await fetch('/api/interPret', {
     method: 'POST',
-    body: JSON.stringify({ chart }),
+    body: JSON.stringify(chart),
   });
 
   // console.log('res', res);
