@@ -29,7 +29,7 @@ const result = ref('');
 async function runInterpret(chart: Record<string, any>) {
   loading.value = true;
 
-  const res = await fetch('/api/interpret', {
+  const res = await fetch('/api/interPret', {
     method: 'POST',
     body: JSON.stringify({ chart }),
   });
