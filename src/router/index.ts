@@ -34,6 +34,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'interpret',
         component: () => import('@/views/Astrology/InterPret.vue'),
+        meta: { hiddenCommonTab: true },
       },
     ],
   },

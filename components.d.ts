@@ -15,6 +15,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Row: typeof import('./src/components/Row.vue')['default']
     VanActionSheet: typeof import('vant/es')['ActionSheet']
+    VanButton: typeof import('vant/es')['Button']
     VanCalendar: typeof import('vant/es')['Calendar']
     VanCell: typeof import('vant/es')['Cell']
     VanCellGroup: typeof import('vant/es')['CellGroup']

@@ -4,6 +4,7 @@ import { createApp } from 'vue';
 import router from './router';
 import App from './App.vue';
 import pinia from './store';
+import 'github-markdown-css/github-markdown.css';
 
 const AppBase = createApp(App);
 AppBase.use(router)
