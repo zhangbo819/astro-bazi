@@ -15,6 +15,9 @@
     "deploy": "gh-pages -d dist --dotfiles"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.80",
+    "@ai-sdk/vue": "^3.0.197",
+    "ai": "^6.0.197",
     "astro-bazi-utils": "^1.0.7",
     "astronomy-engine": "^2.1.19",
     "axios": "^1.4.0",

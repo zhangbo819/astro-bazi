@@ -2,6 +2,7 @@
   <div class="interPret">
     <p>{{ text }}</p>
   </div>
+  <AiChat />
 </template>
 
 <script setup lang="ts">
@@ -9,6 +10,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { generateInterpretation, title12 } from '@/utils/astro/astroUI';
 import { BODIES, BodyInUse, Star } from '@/utils/astro/constant';
+import AiChat from './aiChat.vue';
 
 const route = useRoute();
 
