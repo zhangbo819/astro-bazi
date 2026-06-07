@@ -23,6 +23,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import router from '@/router';
 import { useAstroStore } from '@/store/astro';
 import Astrology from './Astrology/indexPage.vue';
 import Bazi from './Bazi/indexPage.vue';
@@ -44,8 +45,35 @@ watch(
     immediate: true,
   }
 );
+watch(
+  () => route.query.tab,
+  (val) => {
+    const newVal = Number(val);
+    if ([0, 1].includes(newVal) && newVal !== activeBottom.value) {
+      activeBottom.value = newVal;
+    }
+  },
+  {
+    immediate: true,
+  }
+);
+watch(activeBottom, (val) => {
+  if (val !== Number(route.query.tab)) {
+    router.replace({
+      query: {
+        ...route.query,
+        tab: val || undefined,
+      },
+    });
+  }
+});
 
-const onClickLeft = () => history.back();
+const onClickLeft = () => {
+  // history.back();
+  router.push({
+    path: '/astrology',
+  });
+};
 </script>
 
 <!-- <style lang="scss">

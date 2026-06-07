@@ -78,7 +78,7 @@
     <van-collapse-item name="3">
       <template #title> <h2>主要相位</h2></template>
       <van-cell-group inset>
-        <van-cell v-for="item in store.aspectData" :key="item.between">
+        <van-cell v-for="item in store.aspectData" :key="item.between.join('.')">
           <template #title>
             <p>
               <span :style="{ color: planentsMap[item.between[0]].color }"

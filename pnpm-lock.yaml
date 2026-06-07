@@ -15,8 +15,8 @@ dependencies:
     specifier: ^6.0.197
     version: 6.0.197(zod@4.4.3)
   astro-bazi-utils:
-    specifier: ^1.0.7
-    version: 1.0.7
+    specifier: ^1.0.11
+    version: 1.0.11
   astronomy-engine:
     specifier: ^2.1.19
     version: 2.1.19
@@ -1471,8 +1471,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /astro-bazi-utils@1.0.7:
-    resolution: {integrity: sha512-FAyehp28QD3Sm5HfISSR40KxYYKeLu4MvJPFQAeCO4i6Hy8M/bMUKL7RjocPOW2TmIAstpnNB0VFpR4wseSuMQ==}
+  /astro-bazi-utils@1.0.11:
+    resolution: {integrity: sha512-B3XXfTqDFou76v4KrZlKmPUL+24nDLGV9ptuqUDEx9yevc5kWDQ/+dG1Vvs/A7CLmLeXxiV+MWpfmKfFp0r7IQ==}
     engines: {node: '>=18'}
     dev: false
 

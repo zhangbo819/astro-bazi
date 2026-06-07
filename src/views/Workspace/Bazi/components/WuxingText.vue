@@ -1,7 +1,7 @@
 <template>
   <TouchModal :disabled="disabled" :text="touchModalText || text">
     <p
-      :class="{ wuxing: true, wuxing_mid: size === 'mid', wuxing_mini: size === 'mini' }"
+      :class="['wuxing', 'no-copy', { wuxing_mid: size === 'mid', wuxing_mini: size === 'mini' }]"
       :style="{ color: WuXing.getColorByWuxing(color_text) }"
     >
       {{ text }}
@@ -43,7 +43,7 @@ const color_text = computed(() => {
 <style lang="scss" scoped>
 .wuxing {
   margin: 0;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   text-align: center;
 }

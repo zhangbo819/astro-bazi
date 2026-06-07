@@ -404,11 +404,13 @@ const handleNow = async () => {
 
   // scroll to active position
   document.querySelectorAll('.rowList .active').forEach((el) => {
-    el.scrollIntoView({
-      behavior: 'smooth', // 平滑滚动
-      block: 'nearest', // 垂直方向不动
-      inline: 'center', // 让被激活的元素滚动到横向正中间
-    });
+    // el.scrollIntoView({
+    //   behavior: 'smooth', // 平滑滚动
+    //   block: 'nearest', // 垂直方向不动
+    //   inline: 'center', // 让被激活的元素滚动到横向正中间
+    // });
+    // 自动滚动在 tab 中存在问题，这里使用手动计算滚动距离
+    scrollActiveToCenter(el as HTMLElement);
   });
 
   // 整体页面要再晚一些
@@ -419,6 +421,16 @@ const handleNow = async () => {
     // behavior: 'smooth', // 平滑滚动动画
   });
 };
+
+function scrollActiveToCenter(active: HTMLElement) {
+  const container = active.parentElement!;
+  const left = active.offsetLeft - container.clientWidth / 2 + active.clientWidth / 2;
+
+  container.scrollTo({
+    left,
+    behavior: 'smooth',
+  });
+}
 
 // 大运流年流月等切换后自动更新四柱表
 watch(
@@ -548,9 +560,6 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-p {
-  margin: 0;
-}
 .theme-btn {
   padding: 8px;
   color: var(--global-theme-color);

@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { generateInterpretation, title12 } from '@/utils/astro/astroUI';
 import { BODIES, BodyInUse, Star } from '@/utils/astro/constant';

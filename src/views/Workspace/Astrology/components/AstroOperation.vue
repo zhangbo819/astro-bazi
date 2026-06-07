@@ -65,15 +65,15 @@ const emit = defineEmits(['update:time']);
 const now = new Date();
 const minDate = new Date(1900, 0, 1); // 最小 1900 年
 const maxDate = new Date(now.getFullYear() + 100, 11, 31); // 100 年后
-const currentDate = ref([now.getFullYear(), now.getMonth() + 1, now.getDate()]);
-const currentTime = ref([now.getHours(), now.getMinutes()]);
+const currentDate = ref([now.getFullYear() + '', now.getMonth() + 1 + '', now.getDate() + '']);
+const currentTime = ref([now.getHours() + '', now.getMinutes() + '']);
 const showPickerGroup = ref(false);
 
 watch(
   () => props.time,
   (val) => {
-    currentDate.value = [val.getFullYear(), val.getMonth() + 1, val.getDate()];
-    currentTime.value = [val.getHours(), val.getMinutes()];
+    currentDate.value = [val.getFullYear() + '', val.getMonth() + 1 + '', val.getDate() + ''];
+    currentTime.value = [val.getHours() + '', val.getMinutes() + ''];
   },
   { immediate: true }
 );
@@ -121,11 +121,11 @@ const onPickerGroupConfirm = () => {
 
   const newDate = new Date(props.time);
 
-  newDate.setFullYear(year);
-  newDate.setMonth(month - 1);
-  newDate.setDate(day);
-  newDate.setHours(hour);
-  newDate.setMinutes(minute);
+  newDate.setFullYear(Number(year));
+  newDate.setMonth(Number(month) - 1);
+  newDate.setDate(Number(day));
+  newDate.setHours(Number(hour));
+  newDate.setMinutes(Number(minute));
 
   emit('update:time', newDate);
   showPickerGroup.value = false;

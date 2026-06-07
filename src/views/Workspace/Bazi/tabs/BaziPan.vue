@@ -1,18 +1,25 @@
 <template>
   <div class="container">
-    <!-- 修改性别 暂时放这 -->
-    <van-cell
-      is-link
-      title="修改性别"
-      :value="store.sex === 0 ? '男' : '女'"
-      :style="{ '--van-cell-value-color': 'var(--global-theme-color)' }"
-      @click="showSex = true"
-    />
+    <van-cell-group
+      style="--van-cell-vertical-padding: 2px; --van-cell-border-color: #fff"
+      :border="false"
+    >
+      <!-- 修改性别 暂时放这 -->
+      <van-cell
+        is-link
+        :title="`性别：${store.sex === 0 ? '男' : '女'}`"
+        style="--van-cell-right-icon-color: var(--global-theme-color)"
+        @click="showSex = true"
+      />
+      <van-cell :title="renderYinYangli(true)" />
+      <van-cell :title="renderYinYangli()" />
+    </van-cell-group>
     <!-- :style="{ '--van-cell-value-color': store.sex === 0 ? '#6C8EBF' : '#D5A6BD' }" -->
     <van-action-sheet
       v-model:show="showSex"
       :actions="sexActions"
       close-on-click-action
+      teleport="body"
       @select="onSelect"
     />
 
@@ -186,28 +193,8 @@
     </div>
 
     <!-- 天干地支关系 -->
-    <div class="tgDzRelation">
-      <div class="row">
-        <p class="tgDzRelationTitle">天干留意</p>
-        <div>
-          <template v-for="i in tgdz_relation.tg" :key="'relation_tg_row' + i.index">
-            <span v-for="j in i.relation" :key="'relation_tg' + i.index + j.index" class="tgGxItem">
-              {{ j.text }}
-            </span>
-          </template>
-        </div>
-      </div>
-      <div class="row">
-        <p class="tgDzRelationTitle">地支留意</p>
-        <div>
-          <template v-for="i in tgdz_relation.dz" :key="'relation_dz_row' + i.index">
-            <span v-for="j in i.relation" :key="'relation_dz' + i.index + j.index" class="tgGxItem">
-              {{ j.text }}
-            </span>
-          </template>
-        </div>
-      </div>
-    </div>
+    <TgDzRelation />
+
     <!-- 大运流年 -->
     <DaYunTable />
   </div>
@@ -220,14 +207,26 @@ import { useBaziStore } from '@/store/bazi';
 import WuxingText from '../components/WuxingText.vue';
 import TouchModal from '../components/TouchModal.vue';
 import DaYunTable from '../components/DaYunTable.vue';
+import TgDzRelation from '../components/TgDzRelation.vue';
 
 const store = useBaziStore();
+
+const renderYinYangli = (isYang = false) => {
+  const paipanInfo = store.paipanInfo;
+  if (paipanInfo === null) {
+    return '';
+  }
+  const arr = (isYang ? paipanInfo.yangli : paipanInfo.yinli) || [];
+  let res = `${isYang ? '阳历' : '阴历'}：${arr[0]}年${arr[1]}月${arr[2]}日 `;
+  res += isYang ? `${paipanInfo.hh}:${paipanInfo.mt}` : `${paipanInfo.bazi?.[3]?.[1]}时`;
+  return res;
+};
 
 // 修改性别 暂时放这
 const showSex = ref(false);
 const sexActions = [
-  { name: '男', id: 0 },
-  { name: '女', id: 1 },
+  { name: '男', id: 0, color: '#6C8EBF' },
+  { name: '女', id: 1, color: '#D5A6BD' },
 ];
 const onSelect = (item: { name: string; id: 0 | 1 }) => {
   store.sex = item.id;
@@ -250,17 +249,9 @@ const ssMaxLength = computed(() =>
     return r;
   }, 0)
 );
-
-const tgdz_relation = computed(() => ({
-  tg: WuXing.getTgRelation(store.pillarShowData.map((i) => i.tg)),
-  dz: WuXing.getDzRelation(store.pillarShowData.map((i) => i.dz)),
-}));
 </script>
 
 <style lang="scss" scoped>
-p {
-  margin: 0;
-}
 .container {
   background-color: #fafafa;
 }
@@ -299,28 +290,5 @@ p {
 .shensha {
   color: #b2955e;
   text-align: center;
-}
-
-.row {
-  display: flex;
-  flex-direction: row;
-}
-.tgDzRelation {
-  margin: 12px 0;
-  padding: 8px;
-  background-color: #fff;
-  border-radius: 8px;
-
-  .tgDzRelationTitle {
-    margin-right: 8px;
-    font-weight: bold;
-    color: var(--van-primary-color);
-    font-size: 16px;
-    white-space: nowrap;
-  }
-  .tgGxItem {
-    margin: 0 4px;
-    font-size: 16px;
-  }
 }
 </style>

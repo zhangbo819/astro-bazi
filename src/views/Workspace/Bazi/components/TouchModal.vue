@@ -22,6 +22,7 @@ const props = withDefaults(
 );
 
 const handleOpen = () => {
+  console.log('kkk');
   if (props.disabled) return;
   modal.openDialog({
     title: props.title,

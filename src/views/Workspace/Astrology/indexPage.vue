@@ -10,11 +10,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
+import { useSystemStore } from '@/store/system.js';
 import AstroBase from './tabs/AstroBase.vue';
 import AstroAnalyse from './tabs/AstroAnalyse.vue';
 
+const systemStore = useSystemStore();
+
 const activeTop = ref(0);
+
+onBeforeMount(() => {
+  // console.log('astro onBeforeMount');
+  // console.time('astro');
+  systemStore.loading = true;
+});
+onMounted(() => {
+  // console.log('astro onMounted');
+  // console.timeEnd('astro');
+  systemStore.loading = false;
+});
 </script>
 
 <style lang="scss" scoped>
