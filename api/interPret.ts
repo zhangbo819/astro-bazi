@@ -52,7 +52,7 @@ ${JSON.stringify(data, null, 2)}
 `;
 
   const result = await generateText({
-    model: google('gemini-2.5-flash'),
+    model: google('gemini-2.5-flash-lite'),
 
     prompt,
   });
