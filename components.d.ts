@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ChatAI: typeof import('./src/components/ChatAI.vue')['default']
     Col: typeof import('./src/components/Col.vue')['default']
     LoadingPopup: typeof import('./src/components/LoadingPopup.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

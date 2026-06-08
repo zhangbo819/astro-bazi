@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import router from '@/router';
 import { getAllPlanets } from '@/utils/astro/planets';
 import { DignityMap, map12, planentsMap } from '@/utils/astro/astroUI';
@@ -84,7 +84,7 @@ import { renderMarkdown } from '@/utils/util';
 
 // const time = ref(new Date('2013-07-29T04:30:00Z'));
 // const time = ref(new Date('2010-08-07T00:00:00Z'));
-const time = ref(new Date());
+const time = ref(new Date(1994, 7, 19, 5, 20));
 
 const data = computed(() => {
   return getAllPlanets(time.value);
@@ -146,30 +146,6 @@ const onClickLeft = () => {
 
   runInterpret(param);
 };
-
-async function calculateAscendant() {
-  const res = await fetch('/api/ascendant', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      birthTime: time.value.getTime(), // 用户填写的公历时间
-      longitude: 121.4737, // 出生地的经度 (上海)
-      latitude: 31.2304, // 出生地的纬度 (上海)
-    }),
-  });
-
-  const result = await res.json();
-  if (result.success) {
-    console.log(
-      `计算成功！您的上升星座是：${result.data.ascendantSign}，精确度数：${result.data.degreeInSign}`
-    );
-    // 输出: 计算成功！您的上升星座是：巨蟹座，精确度数：15.42°
-  }
-}
-
-onMounted(() => {
-  calculateAscendant();
-});
 </script>
 
 <style lang="scss" scoped>
