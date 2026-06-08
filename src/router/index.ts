@@ -5,23 +5,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     redirect: '/astrology',
-    // component: HomeView,
     // component: () => import(/* webpackChunkName: "china" */ '../views/China')
-  },
-  {
-    path: '/world',
-    name: 'world',
-    component: () => import('@/views/World/indexPage.vue'),
-  },
-  {
-    path: '/china',
-    name: 'china',
-    component: () => import('@/views/China/indexPage.vue'),
-  },
-  {
-    path: '/province',
-    name: 'province',
-    component: () => import('@/views/China/provincePage.vue'),
   },
   {
     path: '/astrology',
