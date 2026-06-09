@@ -84,7 +84,7 @@ import { renderMarkdown } from '@/utils/util';
 
 // const time = ref(new Date('2013-07-29T04:30:00Z'));
 // const time = ref(new Date('2010-08-07T00:00:00Z'));
-const time = ref(new Date(1994, 7, 19, 5, 20));
+const time = ref(new Date());
 
 const data = computed(() => {
   return getAllPlanets(time.value);
