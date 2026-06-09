@@ -1,7 +1,0 @@
-defaults:
-  - scope:
-      path: "" # 根目录下的所有文件
-    values:
-      # 启用 Gzip 压缩
-      encoding:
-        gzip: true

@@ -18,3 +18,5 @@ src/utils/500/cityMap.js
 src/utils/500/cityMap.json
 src/utils/500/cdata.json
 src/utils/500/data.json
+.vercel
+.env*

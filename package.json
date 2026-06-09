@@ -1,11 +1,12 @@
 {
-  "name": "vue-map",
-  "version": "2.0.0",
-  "description": "To explore the economic and commercial development of China and the world",
+  "name": "astro-bazi",
+  "version": "0.0.1",
+  "description": "A project about astrology, horoscope and AI",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "vite",
+    "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "eslint:comment": "使用 ESLint 检查并自动修复 src 目录下所有扩展名为 .js 和 .vue 的文件",

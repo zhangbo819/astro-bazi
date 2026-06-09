@@ -1,0 +1,32 @@
+Vercel CLI 54.10.2 (Node.js 21.5.0)
+> [debug] [2026-06-09T07:22:49.572Z] Agent/TTY/nonInteractive: isAgent=false agentName=none stdin.isTTY=true --non-interactive=false explicitFalse=false => nonInteractive=false
+> [debug] [2026-06-09T07:22:49.573Z] user supplied known subcommand: "dev"
+> [debug] [2026-06-09T07:22:49.684Z] Found ".vercel/repo.json" - detected "/Users/zzb/web/astro-bazi" as repo root
+> [debug] [2026-06-09T07:22:49.685Z] Spinner invoked (Retrieving project…) with a 1000ms delay
+> [debug] [2026-06-09T07:22:49.685Z] Valid access token, skipping token refresh.
+> [debug] [2026-06-09T07:22:49.706Z] #1 → GET https://api.vercel.com/teams/team_b5k2u30AcCl9JjnoU0pBu5mI?teamId=team_b5k2u30AcCl9JjnoU0pBu5mI
+> [debug] [2026-06-09T07:22:49.707Z] #2 → GET https://api.vercel.com/v9/projects/prj_9eetW2QQoXQFAhq3Oh6QRrabfUeC?teamId=team_b5k2u30AcCl9JjnoU0pBu5mI
+> [debug] [2026-06-09T07:22:50.192Z] #2 ← 200 OK: sfo1::bcpn7-1780989770109-c532f15330c8 [485ms]
+> [debug] [2026-06-09T07:22:50.610Z] #1 ← 200 OK: sfo1::7qc7v-1780989770111-1fa94a2acc11 [904ms]
+> [debug] [2026-06-09T07:22:50.613Z] Fetching Environment Variables of prj_9eetW2QQoXQFAhq3Oh6QRrabfUeC and target undefined
+> [debug] [2026-06-09T07:22:50.615Z] #3 → GET https://api.vercel.com/v3/env/pull/prj_9eetW2QQoXQFAhq3Oh6QRrabfUeC?source=vercel-cli%3Adev&teamId=team_b5k2u30AcCl9JjnoU0pBu5mI
+> [debug] [2026-06-09T07:22:50.780Z] #3 ← 200 OK: sfo1::5hp2k-1780989770721-1bd6c2fc4b2d [165ms]
+> [debug] [2026-06-09T07:22:50.786Z] VERCEL_OIDC_TOKEN expires in 43199s; refreshing in 42299s
+> [debug] [2026-06-09T07:22:50.791Z] Reading `package.json` file
+> [debug] [2026-06-09T07:22:50.791Z] Reading `vercel.json` file
+> [debug] [2026-06-09T07:22:50.791Z] No `vercel.json` file present
+> [debug] [2026-06-09T07:22:50.817Z] Locating files /Users/zzb/web/astro-bazi
+> [debug] [2026-06-09T07:22:50.818Z] Ignoring /Users/zzb/web/astro-bazi/.env.local
+> [debug] [2026-06-09T07:22:50.819Z] Ignoring /Users/zzb/web/astro-bazi/.git
+> [debug] [2026-06-09T07:22:50.819Z] Ignoring /Users/zzb/web/astro-bazi/.gitignore
+> [debug] [2026-06-09T07:22:50.819Z] Ignoring /Users/zzb/web/astro-bazi/.vercel
+> [debug] [2026-06-09T07:22:50.819Z] Ignoring /Users/zzb/web/astro-bazi/node_modules
+> [debug] [2026-06-09T07:22:50.821Z] Locating files /Users/zzb/web/astro-bazi [4ms]
+> Running Dev Command “bundle exec jekyll serve --watch --port $PORT”
+> [debug] [2026-06-09T07:22:50.827Z] Starting dev command with parameters: {"cwd":"/Users/zzb/web/astro-bazi","command":"bundle exec jekyll serve --watch --port 57563","port":57563}
+> [debug] [2026-06-09T07:22:50.827Z] Spawning dev command: bundle exec jekyll serve --watch --port 57563
+/System/Library/Frameworks/Ruby.framework/Versions/2.6/usr/lib/ruby/2.6.0/universal-darwin25/rbconfig.rb:21: warning: Insecure world writable dir /opt/homebrew in PATH, mode 040777
+Could not locate Gemfile or .bundle/ directory
+> [debug] [2026-06-09T07:22:50.955Z] Dev command exited with "10"
+> [debug] [2026-06-09T07:22:50.956Z] Dev command closed with "10"
+Error: Dev command “bundle exec jekyll serve --watch --port $PORT” exited with code 10

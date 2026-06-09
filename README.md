@@ -5,6 +5,39 @@
 部署 Vercel
 模型 Gemini
 
+## 本地开发
+
+安装 vercel
+
+```sh
+npm install -g vercel
+npm dlx vercel --version
+```
+
+登录
+
+```sh
+vercel login
+```
+
+link, 三个 yes
+
+```sh
+vercel link
+```
+
+拉取全程配置的环境变量(ai key)至本地
+
+```sh
+vercel env pull .env.local
+```
+
+启动项目
+
+```sh
+vercel dev
+```
+
 ## 占星 TODO
 
 - [x] 新功能：任意时间点的星盘，行星，相位，参数
