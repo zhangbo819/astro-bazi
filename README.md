@@ -32,10 +32,19 @@ vercel link
 vercel env pull .env.local
 ```
 
+在本地新建 .env 并将秘钥放进去
+
 启动项目
 
 ```sh
 vercel dev
+```
+
+注意
+
+```
+Local:   http://127.0.0.1:8088/
+> Ready! Available at http://localhost:8088 // 访问这个而不是上面的，上面的会 426
 ```
 
 ## 占星 TODO
