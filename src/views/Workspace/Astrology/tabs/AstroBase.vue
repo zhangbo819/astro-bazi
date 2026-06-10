@@ -5,9 +5,12 @@
   <van-collapse v-model="activeTab">
     <!-- 操作栏 -->
     <!-- <van-collapse-item name="5">
-        <template #title> <h2>操作栏</h2></template>
-        <astro-operation v-model:time="time" />
-      </van-collapse-item> -->
+      <template #title> <h2>操作栏</h2></template>
+      <astro-operation v-model:time="store.time" />
+    </van-collapse-item> -->
+    <van-cell-group inset>
+      <van-cell title="时间" :value="store.time.toLocaleString()" />
+    </van-cell-group>
 
     <!-- 格局 -->
     <van-collapse-item v-if="store.patternData.length" name="1">

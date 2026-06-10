@@ -1,6 +1,6 @@
 import { computed, ref, shallowRef, watch } from 'vue';
 import { defineStore } from 'pinia';
-import { aspectPosition, getAllPlanets } from '@/utils/astro/planets';
+import { aspectPosition, getAllPlanets, PlanetItem } from '@/utils/astro/planets';
 import { AspectPatternEngine, ConjunctionGroup, Pattern } from '@/utils/astro/aspectPattern';
 
 export const useAstroStore = defineStore('astro', () => {
@@ -20,10 +20,15 @@ export const useAstroStore = defineStore('astro', () => {
   // TODO shallowRef
   const aspectData = computed(() => {
     return aspectPosition.getData(planetList.value).map((i) => {
-      const r = aspectPosition.findAspectWindow(time.value, i.between[0], i.between[1], i.type);
+      const window = aspectPosition.findAspectWindow(
+        time.value,
+        i.between[0],
+        i.between[1],
+        i.type
+      );
       return {
         ...i,
-        window: r,
+        window,
       };
     });
   });
@@ -31,6 +36,12 @@ export const useAstroStore = defineStore('astro', () => {
   // 格局
   const patternData = shallowRef<Pattern[]>([]);
   const conjunctionGroups = shallowRef<ConjunctionGroup[]>([]);
+  const stellium = shallowRef<
+    {
+      name: PlanetItem['sign'];
+      data: PlanetItem[];
+    }[]
+  >([]);
 
   watch([() => aspectData.value, () => planetList.value], () => {
     const engine = new AspectPatternEngine(aspectData.value, planetList.value);
@@ -38,6 +49,7 @@ export const useAstroStore = defineStore('astro', () => {
 
     patternData.value = res.patterns;
     conjunctionGroups.value = res.conjunctionGroups;
+    stellium.value = res.stellium;
   });
 
   return {
@@ -47,5 +59,6 @@ export const useAstroStore = defineStore('astro', () => {
     aspectData,
     patternData,
     conjunctionGroups,
+    stellium,
   };
 });

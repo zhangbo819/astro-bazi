@@ -16,14 +16,30 @@
       >
     </p>
   </div>
+
+  <Row style="justify-content: space-between">
+    <div />
+    <van-button
+      type="primary"
+      plain
+      hairline
+      @click="onClickInterPret"
+      :loading="AIBtnLoading"
+      loading-text="加载中..."
+      >AI 解读</van-button
+    >
+  </Row>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useAstroStore } from '@/store/astro';
+import { useAIStore } from '@/store/AI';
 import { AstroElementMap, AstroModalityMap, planentsMap } from '@/utils/astro/astroUI';
 import { ASTRO_ELEMENTS, ASTRO_MODALITIES } from '@/utils/astro/constant';
 import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
+import Row from '@/components/Row.vue';
+import Col from '@/components/Col.vue';
 
 const store = useAstroStore();
 
@@ -353,4 +369,30 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
 });
+
+const AIStore = useAIStore();
+const AIBtnLoading = ref(false);
+const onClickInterPret = async () => {
+  // 简化参数
+  const params = {
+    planetList: store.planetList.map(({ name, sign, retrograde, dignity }) => {
+      let res = `${name}-${sign}`;
+      if (retrograde) {
+        res += '(R)';
+      }
+      if (dignity !== 'Peregrine') {
+        res += `(${dignity})`;
+      }
+      return res;
+    }),
+    aspectData: store.aspectData.map(({ between, type }) => `${between[0]} ${type} ${between[1]}`),
+    patternData: store.patternData.map(({ slots, type }) => ({ slots, type })),
+    conjunctionGroups: store.conjunctionGroups.map(({ planets }) => planets),
+    stellium: store.stellium.map(({ name, data }) => ({ name, data: data.map((i) => i.name) })),
+  };
+  console.log('params', params);
+  AIBtnLoading.value = true;
+  await AIStore.apiGetInterPret(params);
+  AIBtnLoading.value = false;
+};
 </script>

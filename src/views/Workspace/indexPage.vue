@@ -8,6 +8,8 @@
     <Bazi />
   </template>
 
+  <AIPopup />
+
   <van-tabbar
     v-model="activeBottom"
     placeholder
@@ -25,6 +27,7 @@ import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import router from '@/router';
 import { useAstroStore } from '@/store/astro';
+import AIPopup from '@/components/AIPopup.vue';
 import Astrology from './Astrology/indexPage.vue';
 import Bazi from './Bazi/indexPage.vue';
 
