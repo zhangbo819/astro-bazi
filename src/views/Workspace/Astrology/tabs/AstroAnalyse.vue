@@ -375,7 +375,7 @@ const AIBtnLoading = ref(false);
 const onClickInterPret = async () => {
   // 简化参数
   const params = {
-    planetList: store.planetList.map(({ name, sign, retrograde, dignity }) => {
+    planets: store.planetList.map(({ name, sign, retrograde, dignity }) => {
       let res = `${name}-${sign}`;
       if (retrograde) {
         res += '(R)';
@@ -385,12 +385,12 @@ const onClickInterPret = async () => {
       }
       return res;
     }),
-    aspectData: store.aspectData.map(({ between, type }) => `${between[0]} ${type} ${between[1]}`),
-    patternData: store.patternData.map(({ slots, type }) => ({ slots, type })),
+    aspects: store.aspectData.map(({ between, type }) => `${between[0]} ${type} ${between[1]}`),
+    pattern: store.patternData.map(({ slots, type }) => ({ slots, type })),
     conjunctionGroups: store.conjunctionGroups.map(({ planets }) => planets),
     stellium: store.stellium.map(({ name, data }) => ({ name, data: data.map((i) => i.name) })),
   };
-  console.log('params', params);
+  console.log('params', JSON.stringify(params));
   AIBtnLoading.value = true;
   await AIStore.apiGetInterPret(params);
   AIBtnLoading.value = false;

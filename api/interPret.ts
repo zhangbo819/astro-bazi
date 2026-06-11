@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   const data = await req.json();
 
   const prompt = `
-你是一位专业的心理占星师，根据下面的星盘数据进行解读。
+你是一位专业的心理占星师，抓住星盘核心，所落星座和相位不需要每条都解读，挑选最具代表性的说即可。
 
 请基于以下星盘数据进行解读：
 
