@@ -1,4 +1,5 @@
 import { Planent, Star } from './constant';
+import { PlanetItem } from './planets';
 
 // 埃及界限表
 const Egyptian = {
@@ -101,6 +102,80 @@ export function calcBound(sign: Star, degree: number) {
       break;
     }
   }
+
+  return res;
+}
+
+// 行星状态
+export function getPlanetState(planetList: PlanetItem[]) {
+  const res = [];
+  planetList.forEach((item) => {
+    console.log(item);
+    const planet = item.name;
+    const boundName = String(item.bound);
+
+    const isDignity = item.dignity === 'Domicile' || item.dignity === 'Exaltation';
+    const isFall = item.dignity === 'Detriment' || item.dignity === 'Fall';
+
+    if (planet === boundName) {
+      // 本位
+      if (isDignity) {
+        // 庙旺
+      } else if (isFall) {
+        // 落陷
+      } else {
+        // 游走
+      }
+      res.push({ planet, type: 'Own_Term' });
+    } else {
+      // 非本位, 看界主状态
+      const bound = planetList.find((i) => i.name === boundName)!;
+      const boundDignity = bound.dignity === 'Domicile' || bound.dignity === 'Exaltation';
+      const boundFall = bound.dignity === 'Detriment' || bound.dignity === 'Fall';
+      const boundBenefic = boundName === Planent.Venus || boundName === Planent.Jupiter;
+      const boundMalefic = boundName === Planent.Mars || boundName === Planent.Saturn;
+      const boundNeutral =
+        boundName === Planent.Mercury &&
+        bound.sign === Star.Virgo &&
+        bound.bound === Planent.Mercury;
+
+      // 自己庙旺
+      if (isDignity) {
+        // 界主也庙旺
+        if (boundDignity) {
+          // 吉星
+          // 凶星
+          // 中性
+        } else if (boundFall) {
+          // 界主落陷
+        } else {
+          // 界主游走
+        }
+      }
+    }
+  });
+}
+
+// 得到界限运动图
+export function getBoundMap(
+  data: {
+    bound: Planent | null;
+    planet: Planent;
+  }[]
+) {
+  const res: (Planent | null)[][] = [];
+
+  data.forEach((item) => {
+    const chain = [item.planet, item.bound];
+    let prev = item.bound;
+    let next = data.find((i) => i.planet === prev);
+    while (next && next.bound && next.bound !== next.planet && !chain.includes(next.bound)) {
+      prev = next.bound;
+      next = data.find((i) => i.planet === prev);
+      next && chain.push(next.planet);
+    }
+    res.push(chain);
+  });
 
   return res;
 }

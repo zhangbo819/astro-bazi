@@ -4,7 +4,7 @@
     <div ref="refMap" style="min-height: 350px; width: 100%; margin: auto" />
   </div>
 
-  <div>
+  <div class="content">
     <h2>合相群</h2>
     <p v-for="(item, index) in store.conjunctionGroups" :key="index">
       合相群{{ index + 1 }}:
@@ -17,7 +17,36 @@
     </p>
   </div>
 
-  <Row style="justify-content: space-between">
+  <div class="content">
+    <h2>界限图(埃及表)</h2>
+    <h3>行星状态</h3>
+    <p v-for="planet in store.planetList" :key="planet.name" class="chain">
+      <span :style="{ color: planentsMap[planet.name].color }"
+        >{{ planentsMap[planet.name].name }} {{ map12[planet.sign].name }}</span
+      ><span
+        v-if="DignityMap[planet.dignity].text"
+        :style="{ color: DignityMap[planet.dignity].color }"
+        >({{ DignityMap[planet.dignity].text }})
+      </span>
+      位于
+      <span v-if="planet.bound" :style="{ color: planentsMap[planet.bound].color }"
+        >{{ planentsMap[planet.bound].name }}界</span
+      >
+      <span v-if="String(planet.name) === planet.bound" style="color: #67c23a"> (本位)</span>
+    </p>
+
+    <h3>界限链路</h3>
+    <p v-for="(chain, index) in bounds" :key="index" class="chain">
+      <span v-for="(planet, j) in chain">
+        <span v-if="j !== 0"> -> </span>
+        <span v-if="planet" :style="{ color: planentsMap[planet].color }">
+          {{ planentsMap[planet].name }}
+        </span>
+      </span>
+    </p>
+  </div>
+
+  <Row class="content" style="justify-content: space-between">
     <div />
     <van-button
       type="primary"
@@ -26,7 +55,7 @@
       @click="onClickInterPret"
       :loading="AIBtnLoading"
       loading-text="加载中..."
-      >AI 解读</van-button
+      >AI 解读整体</van-button
     >
   </Row>
 </template>
@@ -35,10 +64,17 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useAstroStore } from '@/store/astro';
 import { useAIStore } from '@/store/AI';
-import { AstroElementMap, AstroModalityMap, planentsMap } from '@/utils/astro/astroUI';
-import { ASTRO_ELEMENTS, ASTRO_MODALITIES } from '@/utils/astro/constant';
-import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
 import Row from '@/components/Row.vue';
+import {
+  AstroElementMap,
+  AstroModalityMap,
+  DignityMap,
+  map12,
+  planentsMap,
+} from '@/utils/astro/astroUI';
+import { ASTRO_ELEMENTS, ASTRO_MODALITIES, Planent } from '@/utils/astro/constant';
+import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
+import { getBoundMap, getPlanetState } from '@/utils/astro/bounds';
 
 const store = useAstroStore();
 
@@ -397,15 +433,26 @@ const onClickInterPret = async () => {
 };
 
 // 行星界限
-// const bounds = computed(() => {
-//   return store.planetList
-//     .filter((i) => ClassicalPlanent.includes(i.name as any))
-//     .map((i) => ({
-//       degree: i.degree,
-//       planent: i.name,
-//       sign: i.sign,
-//       bound: calcBound(i.sign, i.degree),
-//     }));
+// const planetState = computed(() => {
+//   return getPlanetState(store.planetList);
 // });
-// console.log('bounds', bounds.value);
+// console.log(planetState.value);
+
+const bounds = computed(() => {
+  return getBoundMap(
+    store.planetList.map((i) => ({
+      planet: String(i.name) as Planent,
+      bound: i.bound,
+    }))
+  );
+});
 </script>
+
+<style lang="scss" scoped>
+.content {
+  padding: 1em;
+}
+.chain {
+  margin: 5px 0;
+}
+</style>

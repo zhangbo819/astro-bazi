@@ -76,6 +76,7 @@
             界限：<span :style="{ color: planentsMap[item.bound].color }">{{
               planentsMap[item.bound].name
             }}</span>
+            <span v-if="String(item.name) === item.bound" style="color: #67c23a"> (本位)</span>
           </p>
         </van-cell>
       </van-cell-group>
