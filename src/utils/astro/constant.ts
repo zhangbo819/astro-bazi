@@ -1,20 +1,5 @@
 import { Body } from 'astronomy-engine';
 
-export const BODIES = [
-  Body.Sun,
-  Body.Moon,
-  Body.Mercury,
-  Body.Venus,
-  Body.Mars,
-  Body.Jupiter,
-  Body.Saturn,
-  Body.Uranus,
-  Body.Neptune,
-  Body.Pluto,
-] as const;
-
-export type BodyInUse = (typeof BODIES)[number];
-
 export enum Star {
   'Aries' = 'Aries',
   'Taurus' = 'Taurus',
@@ -30,17 +15,46 @@ export enum Star {
   'Pisces' = 'Pisces',
 }
 
+export enum Planent {
+  Sun = Body.Sun,
+  Moon = Body.Moon,
+  Mercury = Body.Mercury,
+  Venus = Body.Venus,
+  Mars = Body.Mars,
+  Jupiter = Body.Jupiter,
+  Saturn = Body.Saturn,
+  Uranus = Body.Uranus,
+  Neptune = Body.Neptune,
+  Pluto = Body.Pluto,
+}
+
 // 古典七曜
-// const ClassicalPlanent = [
-//   Body.Sun,
-//   Body.Moon,
-//   Body.Mercury,
-//   Body.Venus,
-//   Body.Mars,
-//   Body.Jupiter,
-//   Body.Saturn,
-// ] as const;
-// type ClassicalPlanentType = (typeof ClassicalPlanent)[number];
+export const ClassicalPlanent = [
+  Planent.Sun,
+  Planent.Moon,
+  Planent.Mercury,
+  Planent.Venus,
+  Planent.Mars,
+  Planent.Jupiter,
+  Planent.Saturn,
+] as const;
+export type ClassicalPlanentType = (typeof ClassicalPlanent)[number];
+
+// TODO use Planent
+export const BODIES = [
+  Body.Sun,
+  Body.Moon,
+  Body.Mercury,
+  Body.Venus,
+  Body.Mars,
+  Body.Jupiter,
+  Body.Saturn,
+  Body.Uranus,
+  Body.Neptune,
+  Body.Pluto,
+] as const;
+
+export type BodyInUse = (typeof BODIES)[number];
 
 // 现代三王星
 // const ModernPlanent = [Body.Uranus, Body.Neptune, Body.Pluto] as const;

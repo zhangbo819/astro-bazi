@@ -71,8 +71,12 @@
             {{ item.sign }} {{ map12[item.sign].name }}
             <span v-if="item.retrograde">R</span>
           </p>
-
           <p class="value">{{ item.degree }}°</p>
+          <p class="bound" v-if="item.bound">
+            界限：<span :style="{ color: planentsMap[item.bound].color }">{{
+              planentsMap[item.bound].name
+            }}</span>
+          </p>
         </van-cell>
       </van-cell-group>
     </van-collapse-item>
@@ -152,11 +156,13 @@ const activeTab = ref(new Array(6).fill(0).map((_, i) => String(i + 1)));
 
 <style lang="scss" scoped>
 .value {
-  margin: 0;
   // font-weight: bold;
   > span {
     color: #666;
   }
+}
+.bound {
+  font-size: 12px;
 }
 .mid-span {
   margin: 0 8px;

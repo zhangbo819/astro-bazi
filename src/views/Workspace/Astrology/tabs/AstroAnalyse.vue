@@ -32,14 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useAstroStore } from '@/store/astro';
 import { useAIStore } from '@/store/AI';
 import { AstroElementMap, AstroModalityMap, planentsMap } from '@/utils/astro/astroUI';
 import { ASTRO_ELEMENTS, ASTRO_MODALITIES } from '@/utils/astro/constant';
 import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
 import Row from '@/components/Row.vue';
-import Col from '@/components/Col.vue';
 
 const store = useAstroStore();
 
@@ -370,6 +369,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', resize);
 });
 
+// ai 解读
 const AIStore = useAIStore();
 const AIBtnLoading = ref(false);
 const onClickInterPret = async () => {
@@ -395,4 +395,17 @@ const onClickInterPret = async () => {
   await AIStore.apiGetInterPret(params);
   AIBtnLoading.value = false;
 };
+
+// 行星界限
+// const bounds = computed(() => {
+//   return store.planetList
+//     .filter((i) => ClassicalPlanent.includes(i.name as any))
+//     .map((i) => ({
+//       degree: i.degree,
+//       planent: i.name,
+//       sign: i.sign,
+//       bound: calcBound(i.sign, i.degree),
+//     }));
+// });
+// console.log('bounds', bounds.value);
 </script>
