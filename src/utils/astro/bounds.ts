@@ -1,4 +1,5 @@
-import { Planent, Star } from './constant';
+import { ClassicalPlanent, ClassicalPlanentType, Planent, Star } from './constant';
+import { getPlanetDignityStatus } from './dignity';
 import { PlanetItem } from './planets';
 
 // 埃及界限表
@@ -104,6 +105,33 @@ export function calcBound(sign: Star, degree: number) {
   }
 
   return res;
+}
+
+// 计算互溶
+export function calcReception(planetList: PlanetItem[], isClassical = false) {
+  const data = planetList.filter((i) => {
+    if (isClassical) {
+      return ClassicalPlanent.includes(String(i.name) as ClassicalPlanentType);
+    }
+    return true;
+  });
+  // const res = []
+  // TODO 与接纳融合
+  for (let i = 0, len = data.length; i < len - 1; i++) {
+    const item = data[i];
+    for (let j = i + 1; j < len; j++) {
+      const newItem = data[j];
+      const reception1 = getPlanetDignityStatus(newItem.name, item.sign);
+      if (reception1 === 'Domicile') {
+        const reception2 = getPlanetDignityStatus(item.name, newItem.sign);
+        if (reception2 === 'Domicile') {
+          // a b 互溶
+          console.log(`${item.name}:${item.sign},${newItem.name}:${newItem.sign}`);
+          break;
+        }
+      }
+    }
+  }
 }
 
 // 行星状态

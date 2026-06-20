@@ -18,6 +18,36 @@
   </div>
 
   <div class="content">
+    <h2>三分主星(标准多罗修斯)</h2>
+    <Row style="align-items: center">
+      <p style="margin-right: 8px">{{ isDay ? '日盘' : '夜盘' }}</p>
+      <van-switch v-model="isDay" />
+    </Row>
+    <p v-for="item in triplicity" :key="item.name" class="chain">
+      <span :style="{ color: planentsMap[item.name].color, marginRight: '8px' }"
+        >{{ planentsMap[item.name].name }} {{ map12[item.sign].name }}</span
+      >
+      <template v-if="item.tripliity">
+        <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }}</span>
+        <p>
+          主星位置：
+          <span
+            v-for="(j, ruleIndex) in item.rule"
+            :key="item.name + j"
+            :style="{
+              color: ruleIndex === item.tripliity.index ? '#67c23a' : 'gray',
+            }"
+            >{{ planentsMap[j].name }}
+            <!-- <span v-if="ruleIndex === item.tripliity.index">({{ item.tripliity.ruler }})</span> -->
+          </span>
+        </p>
+      </template>
+      <span v-else style="color: gray">无三分权</span>
+      <van-divider style="--van-divider-margin: 8px" />
+    </p>
+  </div>
+
+  <div class="content">
     <h2>界限图(埃及表)</h2>
     <h3>行星状态</h3>
     <p v-for="planet in store.planetList" :key="planet.name" class="chain">
@@ -74,7 +104,9 @@ import {
 } from '@/utils/astro/astroUI';
 import { ASTRO_ELEMENTS, ASTRO_MODALITIES, Planent } from '@/utils/astro/constant';
 import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
-import { getBoundMap, getPlanetState } from '@/utils/astro/bounds';
+import { getBoundMap } from '@/utils/astro/bounds';
+import { calcTriplicity } from '@/utils/astro/triplicity';
+import { color } from 'echarts';
 
 const store = useAstroStore();
 
@@ -390,7 +422,6 @@ const resize = () => {
     myChart.resize();
   }
 };
-
 watch(
   () => store.planetList,
   () => {
@@ -432,12 +463,20 @@ const onClickInterPret = async () => {
   AIBtnLoading.value = false;
 };
 
-// 行星界限
-// const planetState = computed(() => {
-//   return getPlanetState(store.planetList);
-// });
-// console.log(planetState.value);
+// 三分主星
+const isDay = ref(true);
+const triplicity = computed(() => {
+  return calcTriplicity(store.planetList, isDay.value);
+});
+console.log(triplicity.value);
 
+// 互溶
+// const planetReception = computed(() => {
+//   return calcReception(store.planetList, true);
+// });
+// console.log(planetReception.value);
+
+// 行星界限
 const bounds = computed(() => {
   return getBoundMap(
     store.planetList.map((i) => ({
@@ -446,6 +485,12 @@ const bounds = computed(() => {
     }))
   );
 });
+
+// 行星状态
+// const planetState = computed(() => {
+//   return getPlanetState(store.planetList);
+// });
+// console.log(planetState.value);
 </script>
 
 <style lang="scss" scoped>
