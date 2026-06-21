@@ -72,12 +72,12 @@
             <span v-if="item.retrograde">R</span>
           </p>
           <p class="value">{{ item.degree }}°</p>
-          <p class="bound" v-if="item.bound">
+          <!-- <p class="bound" v-if="item.bound">
             界限：<span :style="{ color: planentsMap[item.bound].color }">{{
               planentsMap[item.bound].name
             }}</span>
             <span v-if="String(item.name) === item.bound" style="color: #67c23a"> (本位)</span>
-          </p>
+          </p> -->
         </van-cell>
       </van-cell-group>
     </van-collapse-item>

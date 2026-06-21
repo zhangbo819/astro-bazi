@@ -12,7 +12,21 @@
     </p>
   </div>
 
+  <Row class="content" style="justify-content: space-between">
+    <div />
+    <van-button
+      type="primary"
+      plain
+      hairline
+      @click="onClickInterPret"
+      :loading="AIBtnLoading"
+      loading-text="加载中..."
+      >AI 解读整体</van-button
+    >
+  </Row>
+
   <div class="content">
+    <h1>古典行星评分</h1>
     <h2>三分主星(标准多罗修斯)</h2>
     <Row style="align-items: center">
       <p style="margin-right: 8px">{{ isDay ? '日盘' : '夜盘' }}</p>
@@ -23,7 +37,7 @@
         >&nbsp;<SignText :name="item.sign" text-only
       /></PlanetText>
       <template v-if="item.tripliity">
-        <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }}</span>
+        <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }} (+ 3)</span>
       </template>
       <span v-else style="color: gray">无三分权</span>
       <p>
@@ -43,6 +57,30 @@
   </div>
 
   <div class="content">
+    <h2>界限图(埃及表)</h2>
+    <h3>行星界限</h3>
+    <p v-for="planet in store.planetList" :key="planet.name" class="chain">
+      <PlanetText :name="planet.name">&nbsp;<SignText :name="planet.sign" text-only /></PlanetText>
+      <span
+        v-if="DignityMap[planet.dignity].text"
+        :style="{ color: DignityMap[planet.dignity].color }"
+        >({{ DignityMap[planet.dignity].text }} {{ DignityMap[planet.dignity].score }})
+      </span>
+      位于
+      <PlanetText v-if="planet.bound" :name="planet.bound">界</PlanetText>
+      <span v-if="String(planet.name) === planet.bound" style="color: #67c23a"> (本位 + 2)</span>
+    </p>
+
+    <h3>界限链路</h3>
+    <p v-for="(chain, index) in bounds" :key="index" class="chain">
+      <span v-for="(planet, j) in chain">
+        <span v-if="j !== 0"> -> </span>
+        <PlanetText v-if="planet" :name="planet" />
+      </span>
+    </p>
+  </div>
+
+  <div class="content">
     <h2>接纳与互溶</h2>
 
     <template v-if="planetReception.length">
@@ -55,50 +93,21 @@
           /></PlanetText>
 
           <sapn v-if="item.type !== 'Reception'" style="margin-left: 8px">
-            {{ item.type === 'MutualReception' ? '互溶' : '互溶接纳' }}</sapn
+            {{ item.type === 'MutualReception' ? '互溶' : '互溶接纳 (强)' }}</sapn
           >
         </span>
       </p>
+      <p>两个星体同时接纳彼此则为互溶，互溶基础上产生相位则为互溶接纳，效果依次加强</p>
+      <p>
+        <b
+          >互溶可以弥补星座落陷时损失的分数，效果：守护接纳 > 入旺接纳 > 三分接纳 > 界接纳 >
+          面接纳</b
+        >
+      </p>
+      <p><i>(此处仅展示守护和入旺互溶接纳)</i></p>
     </template>
     <p v-else>关系不存在</p>
   </div>
-
-  <div class="content">
-    <h2>界限图(埃及表)</h2>
-    <h3>行星状态</h3>
-    <p v-for="planet in store.planetList" :key="planet.name" class="chain">
-      <PlanetText :name="planet.name">&nbsp;<SignText :name="planet.sign" text-only /></PlanetText>
-      <span
-        v-if="DignityMap[planet.dignity].text"
-        :style="{ color: DignityMap[planet.dignity].color }"
-        >({{ DignityMap[planet.dignity].text }})
-      </span>
-      位于
-      <PlanetText v-if="planet.bound" :name="planet.bound">界</PlanetText>
-      <span v-if="String(planet.name) === planet.bound" style="color: #67c23a"> (本位)</span>
-    </p>
-
-    <h3>界限链路</h3>
-    <p v-for="(chain, index) in bounds" :key="index" class="chain">
-      <span v-for="(planet, j) in chain">
-        <span v-if="j !== 0"> -> </span>
-        <PlanetText v-if="planet" :name="planet" />
-      </span>
-    </p>
-  </div>
-
-  <Row class="content" style="justify-content: space-between">
-    <div />
-    <van-button
-      type="primary"
-      plain
-      hairline
-      @click="onClickInterPret"
-      :loading="AIBtnLoading"
-      loading-text="加载中..."
-      >AI 解读整体</van-button
-    >
-  </Row>
 </template>
 
 <script setup lang="ts">
@@ -109,7 +118,7 @@ import Row from '@/components/Row.vue';
 import { AstroElementMap, AstroModalityMap, DignityMap, planentsMap } from '@/utils/astro/astroUI';
 import { ASTRO_ELEMENTS, ASTRO_MODALITIES, Planent } from '@/utils/astro/constant';
 import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
-import { calcReception, getBoundMap } from '@/utils/astro/bounds';
+import { calcReception, getBoundChains } from '@/utils/astro/bounds';
 import { calcTriplicity } from '@/utils/astro/triplicity';
 import PlanetText from '../components/PlanetText.vue';
 import SignText from '../components/SignText.vue';
@@ -474,19 +483,10 @@ const isDay = ref(true);
 const triplicity = computed(() => {
   return calcTriplicity(store.planetList, isDay.value);
 });
-console.log(triplicity.value);
-
-// 互溶
-const planetReception = computed(() => {
-  return calcReception(
-    store.planetList,
-    store.aspectData.map(({ between, type }) => ({ between, type }))
-  );
-});
 
 // 行星界限
 const bounds = computed(() => {
-  return getBoundMap(
+  return getBoundChains(
     store.planetList.map((i) => ({
       planet: String(i.name) as Planent,
       bound: i.bound,
@@ -499,6 +499,14 @@ const bounds = computed(() => {
 //   return verifyBounds(store.planetList);
 // });
 // console.log(planetState.value);
+
+// 互溶
+const planetReception = computed(() => {
+  return calcReception(
+    store.planetList,
+    store.aspectData.map(({ between, type }) => ({ between, type }))
+  );
+});
 </script>
 
 <style lang="scss" scoped>

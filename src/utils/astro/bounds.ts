@@ -177,58 +177,41 @@ export function calcReception(
   return res;
 }
 
-// 验证界是否成立
-export function verifyBounds(planetList: PlanetItem[]) {
-  const res = [];
-  planetList.forEach((item) => {
-    console.log(item);
-    const planet = item.name;
-    const boundName = String(item.bound);
+// // 验证界是否成立
+// export function verifyBounds(planetList: PlanetItem[], planetReception: calcReceptionRes) {
+//   const res: {
+//     type: 'Own_Term';
+//     planet: PlanetItem['name'];
+//   }[] = [];
+//   planetList.forEach((item) => {
+//     // console.log(item);
+//     const planet = item.name;
+//     const boundName = String(item.bound);
 
-    const isDignity = item.dignity === 'Domicile' || item.dignity === 'Exaltation';
-    const isFall = item.dignity === 'Detriment' || item.dignity === 'Fall';
-
-    if (planet === boundName) {
-      // 本位
-      if (isDignity) {
-        // 庙旺
-      } else if (isFall) {
-        // 落陷
-      } else {
-        // 游走
-      }
-      res.push({ planet, type: 'Own_Term' });
-    } else {
-      // 非本位, 看界主状态
-      const bound = planetList.find((i) => i.name === boundName)!;
-      const boundDignity = bound.dignity === 'Domicile' || bound.dignity === 'Exaltation';
-      const boundFall = bound.dignity === 'Detriment' || bound.dignity === 'Fall';
-      const boundBenefic = boundName === Planent.Venus || boundName === Planent.Jupiter;
-      const boundMalefic = boundName === Planent.Mars || boundName === Planent.Saturn;
-      const boundNeutral =
-        boundName === Planent.Mercury &&
-        bound.sign === Star.Virgo &&
-        bound.bound === Planent.Mercury;
-
-      // 自己庙旺
-      if (isDignity) {
-        // 界主也庙旺
-        if (boundDignity) {
-          // 吉星
-          // 凶星
-          // 中性
-        } else if (boundFall) {
-          // 界主落陷
-        } else {
-          // 界主游走
-        }
-      }
-    }
-  });
-}
+//     if (planet === boundName) {
+//       // 本位
+//       res.push({ planet, type: 'Own_Term' });
+//     } else {
+//       // 非本位, 看与界主的互溶情况
+//       const bound = planetList.find((i) => i.name === boundName)!; // 界主
+//       console.log('planetReception', planetReception);
+//       const receptionItem = planetReception.find((i) => {
+//         const isReception = i.type === 'Reception';
+//         return i.type === 'MutualReception' || i.type === 'MutualWithReception' || isReception;
+//       });
+//       // const boundBenefic = boundName === Planent.Venus || boundName === Planent.Jupiter;
+//       // const boundMalefic = boundName === Planent.Mars || boundName === Planent.Saturn;
+//       // const boundNeutral =
+//       //   boundName === Planent.Mercury &&
+//       //   bound.sign === Star.Virgo &&
+//       //   bound.bound === Planent.Mercury;
+//     }
+//   });
+//   return res;
+// }
 
 // 得到界限运动图
-export function getBoundMap(
+export function getBoundChains(
   data: {
     bound: Planent | null;
     planet: Planent;

@@ -215,12 +215,12 @@ export const patternMap = {
   // },
 };
 
-export const DignityMap: Record<DignityStatus, { color: string; text: string }> = {
-  Domicile: { text: '庙', color: '#67c23a' }, // 强能量（绿色）
-  Exaltation: { text: '旺', color: '#409eff' }, // 较强（蓝色）
-  Detriment: { text: '失势', color: '#e6a23c' }, // 弱化（橙色）
-  Fall: { text: '落陷', color: '#f56c6c' }, // 极弱（红色）
-  Peregrine: { text: '', color: '#909399' }, // 中性（灰色）
+export const DignityMap: Record<DignityStatus, { color: string; text: string; score: string }> = {
+  Domicile: { text: '庙', color: '#67c23a', score: '+ 5' }, // 强能量（绿色）
+  Exaltation: { text: '旺', color: '#409eff', score: '+ 4' }, // 较强（蓝色）
+  Detriment: { text: '失势', color: '#e6a23c', score: '- 4' }, // 弱化（橙色）
+  Fall: { text: '落陷', color: '#f56c6c', score: '- 5' }, // 极弱（红色）
+  Peregrine: { text: '', color: '#909399', score: '0' }, // 中性（灰色）
 };
 
 export function generateInterpretation(p: BodyInUse, s: Star): string {
