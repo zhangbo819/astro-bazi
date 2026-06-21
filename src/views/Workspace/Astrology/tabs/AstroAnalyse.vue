@@ -29,20 +29,20 @@
       >
       <template v-if="item.tripliity">
         <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }}</span>
-        <p>
-          主星位置：
-          <span
-            v-for="(j, ruleIndex) in item.rule"
-            :key="item.name + j"
-            :style="{
-              color: ruleIndex === item.tripliity.index ? '#67c23a' : 'gray',
-            }"
-            >{{ planentsMap[j].name }}
-            <!-- <span v-if="ruleIndex === item.tripliity.index">({{ item.tripliity.ruler }})</span> -->
-          </span>
-        </p>
       </template>
       <span v-else style="color: gray">无三分权</span>
+      <p>
+        主星位置：
+        <span
+          v-for="(j, ruleIndex) in item.rule"
+          :key="item.name + j"
+          :style="{
+            color: item.tripliity && ruleIndex === item.tripliity.index ? '#67c23a' : 'gray',
+          }"
+          >{{ planentsMap[j].name }}
+          <!-- <span v-if="ruleIndex === item.tripliity.index">({{ item.tripliity.ruler }})</span> -->
+        </span>
+      </p>
       <van-divider style="--van-divider-margin: 8px" />
     </p>
   </div>

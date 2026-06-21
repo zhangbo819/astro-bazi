@@ -45,7 +45,7 @@ export function calcTriplicity(planetList: PlanetItem[], isDay: boolean) {
       name,
       sign,
       rule: tripliityData,
-      tripliity: index === -1 ? null : { index, ruler: ruler_map[index] },
+      tripliity: index === 0 ? { index, ruler: ruler_map[index] } : null,
     });
   });
   return res;
