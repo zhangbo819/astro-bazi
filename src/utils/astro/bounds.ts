@@ -1,6 +1,6 @@
 import { ClassicalPlanent, ClassicalPlanentType, Planent, Star } from './constant';
 import { getPlanetDignityStatus } from './dignity';
-import { PlanetItem } from './planets';
+import { AspectItem, PlanetItem } from './planets';
 
 // 埃及界限表
 const Egyptian = {
@@ -107,35 +107,78 @@ export function calcBound(sign: Star, degree: number) {
   return res;
 }
 
-// 计算互溶
-export function calcReception(planetList: PlanetItem[], isClassical = false) {
-  const data = planetList.filter((i) => {
-    if (isClassical) {
-      return ClassicalPlanent.includes(String(i.name) as ClassicalPlanentType);
-    }
-    return true;
-  });
-  // const res = []
-  // TODO 与接纳融合
+// 计算 接纳 互溶 互溶接纳
+type calcReceptionRes = {
+  type: 'MutualWithReception' | 'MutualReception' | 'Reception';
+  from: PlanetItem['name'];
+  fromSign: PlanetItem['sign'];
+  to: PlanetItem['name'];
+  toSign: PlanetItem['sign'];
+}[];
+export function calcReception(
+  planetList: PlanetItem[],
+  aspect: { between: AspectItem['between']; type: AspectItem['type'] }[]
+): calcReceptionRes {
+  const data = planetList.filter((i) =>
+    ClassicalPlanent.includes(String(i.name) as ClassicalPlanentType)
+  );
+
+  const res: calcReceptionRes = [];
   for (let i = 0, len = data.length; i < len - 1; i++) {
-    const item = data[i];
+    const itemA = data[i];
+    // console.log(itemA.name);
     for (let j = i + 1; j < len; j++) {
-      const newItem = data[j];
-      const reception1 = getPlanetDignityStatus(newItem.name, item.sign);
-      if (reception1 === 'Domicile') {
-        const reception2 = getPlanetDignityStatus(item.name, newItem.sign);
-        if (reception2 === 'Domicile') {
-          // a b 互溶
-          console.log(`${item.name}:${item.sign},${newItem.name}:${newItem.sign}`);
-          break;
+      const itemB = data[j];
+      const reception1 = getPlanetDignityStatus(itemB.name, itemA.sign);
+      const reception2 = getPlanetDignityStatus(itemA.name, itemB.sign);
+      const isReception1 = reception1 === 'Domicile' || reception1 === 'Exaltation';
+      const isReception2 = reception2 === 'Domicile' || reception2 === 'Exaltation';
+
+      const common = {
+        from: itemA.name,
+        fromSign: itemA.sign,
+        to: itemB.name,
+        toSign: itemB.sign,
+      };
+
+      if (isReception1 && isReception2) {
+        const aspectItem = aspect.find(
+          (aspectItem) =>
+            aspectItem.between.includes(itemA.name) && aspectItem.between.includes(itemB.name)
+        );
+        if (aspectItem) {
+          res.push({ type: 'MutualWithReception', ...common });
+          // console.log(`${itemA.name} ${itemB.name} 互溶接纳`);
+        } else {
+          res.push({ type: 'MutualReception', ...common });
+          // console.log(`${itemA.name} ${itemB.name} 互溶`);
         }
+      } else if (isReception1 && !isReception2) {
+        // console.log(`${itemB.name} ${itemB.sign} 接纳 ${itemA.name} ${itemA.sign}`);
+        res.push({
+          type: 'Reception',
+          ...common,
+        });
+      } else if (!isReception1 && isReception2) {
+        // console.log(`${itemA.name} ${itemA.sign} 接纳 ${itemB.name} ${itemB.sign}`);
+        res.push({
+          type: 'Reception',
+          from: itemB.name,
+          fromSign: itemB.sign,
+          to: itemA.name,
+          toSign: itemA.sign,
+        });
       }
     }
   }
+
+  res.sort((a, b) => b.type.length - a.type.length);
+
+  return res;
 }
 
-// 行星状态
-export function getPlanetState(planetList: PlanetItem[]) {
+// 验证界是否成立
+export function verifyBounds(planetList: PlanetItem[]) {
   const res = [];
   planetList.forEach((item) => {
     console.log(item);

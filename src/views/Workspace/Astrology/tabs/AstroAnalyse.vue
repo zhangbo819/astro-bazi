@@ -8,12 +8,7 @@
     <h2>合相群</h2>
     <p v-for="(item, index) in store.conjunctionGroups" :key="index">
       合相群{{ index + 1 }}:
-      <span
-        v-for="p in item.planets"
-        :key="p"
-        :style="{ color: planentsMap[p].color, marginRight: '8px' }"
-        >{{ planentsMap[p].name }}</span
-      >
+      <PlanetText v-for="p in item.planets" :key="p" :style="{ marginRight: '8px' }" :name="p" />
     </p>
   </div>
 
@@ -23,10 +18,10 @@
       <p style="margin-right: 8px">{{ isDay ? '日盘' : '夜盘' }}</p>
       <van-switch v-model="isDay" />
     </Row>
-    <p v-for="item in triplicity" :key="item.name" class="chain">
-      <span :style="{ color: planentsMap[item.name].color, marginRight: '8px' }"
-        >{{ planentsMap[item.name].name }} {{ map12[item.sign].name }}</span
-      >
+    <div v-for="item in triplicity" :key="item.name" class="chain">
+      <PlanetText :style="{ marginRight: '8px' }" :name="item.name"
+        >&nbsp;<SignText :name="item.sign" text-only
+      /></PlanetText>
       <template v-if="item.tripliity">
         <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }}</span>
       </template>
@@ -44,24 +39,42 @@
         </span>
       </p>
       <van-divider style="--van-divider-margin: 8px" />
-    </p>
+    </div>
+  </div>
+
+  <div class="content">
+    <h2>接纳与互溶</h2>
+
+    <template v-if="planetReception.length">
+      <p v-for="item in planetReception" :key="item.type + item.from + item.to">
+        <span
+          ><PlanetText :name="item.to">&nbsp;<SignText :name="item.toSign" text-only /></PlanetText>
+          {{ item.type === 'Reception' ? '接纳' : '与' }}
+          <PlanetText :name="item.from"
+            >&nbsp;<SignText :name="item.fromSign" text-only
+          /></PlanetText>
+
+          <sapn v-if="item.type !== 'Reception'" style="margin-left: 8px">
+            {{ item.type === 'MutualReception' ? '互溶' : '互溶接纳' }}</sapn
+          >
+        </span>
+      </p>
+    </template>
+    <p v-else>关系不存在</p>
   </div>
 
   <div class="content">
     <h2>界限图(埃及表)</h2>
     <h3>行星状态</h3>
     <p v-for="planet in store.planetList" :key="planet.name" class="chain">
-      <span :style="{ color: planentsMap[planet.name].color }"
-        >{{ planentsMap[planet.name].name }} {{ map12[planet.sign].name }}</span
-      ><span
+      <PlanetText :name="planet.name">&nbsp;<SignText :name="planet.sign" text-only /></PlanetText>
+      <span
         v-if="DignityMap[planet.dignity].text"
         :style="{ color: DignityMap[planet.dignity].color }"
         >({{ DignityMap[planet.dignity].text }})
       </span>
       位于
-      <span v-if="planet.bound" :style="{ color: planentsMap[planet.bound].color }"
-        >{{ planentsMap[planet.bound].name }}界</span
-      >
+      <PlanetText v-if="planet.bound" :name="planet.bound">界</PlanetText>
       <span v-if="String(planet.name) === planet.bound" style="color: #67c23a"> (本位)</span>
     </p>
 
@@ -69,9 +82,7 @@
     <p v-for="(chain, index) in bounds" :key="index" class="chain">
       <span v-for="(planet, j) in chain">
         <span v-if="j !== 0"> -> </span>
-        <span v-if="planet" :style="{ color: planentsMap[planet].color }">
-          {{ planentsMap[planet].name }}
-        </span>
+        <PlanetText v-if="planet" :name="planet" />
       </span>
     </p>
   </div>
@@ -95,18 +106,13 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useAstroStore } from '@/store/astro';
 import { useAIStore } from '@/store/AI';
 import Row from '@/components/Row.vue';
-import {
-  AstroElementMap,
-  AstroModalityMap,
-  DignityMap,
-  map12,
-  planentsMap,
-} from '@/utils/astro/astroUI';
+import { AstroElementMap, AstroModalityMap, DignityMap, planentsMap } from '@/utils/astro/astroUI';
 import { ASTRO_ELEMENTS, ASTRO_MODALITIES, Planent } from '@/utils/astro/constant';
 import { AstroDistribution, buildDistribution } from '@/utils/astro/planets';
-import { getBoundMap } from '@/utils/astro/bounds';
+import { calcReception, getBoundMap } from '@/utils/astro/bounds';
 import { calcTriplicity } from '@/utils/astro/triplicity';
-import { color } from 'echarts';
+import PlanetText from '../components/PlanetText.vue';
+import SignText from '../components/SignText.vue';
 
 const store = useAstroStore();
 
@@ -471,10 +477,12 @@ const triplicity = computed(() => {
 console.log(triplicity.value);
 
 // 互溶
-// const planetReception = computed(() => {
-//   return calcReception(store.planetList, true);
-// });
-// console.log(planetReception.value);
+const planetReception = computed(() => {
+  return calcReception(
+    store.planetList,
+    store.aspectData.map(({ between, type }) => ({ between, type }))
+  );
+});
 
 // 行星界限
 const bounds = computed(() => {
@@ -488,7 +496,7 @@ const bounds = computed(() => {
 
 // 行星状态
 // const planetState = computed(() => {
-//   return getPlanetState(store.planetList);
+//   return verifyBounds(store.planetList);
 // });
 // console.log(planetState.value);
 </script>

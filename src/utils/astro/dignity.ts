@@ -1,5 +1,5 @@
 import { Body } from 'astronomy-engine';
-import { BodyInUse, Star } from './constant';
+import { BodyInUse, Planent, Star } from './constant';
 
 /** 行星庙旺落陷状态 */
 interface DignityData {
@@ -76,6 +76,22 @@ const PLANET_DIGNITIES: Record<BodyInUse, DignityData> = {
     // fall: Star.Aquarius,
   },
 };
+
+// 星座对应的守护星(古典)
+// const PLANENT_RULER_MAP_CLASS = {
+//   [Star.Aries]: Planent.Mars,
+//   [Star.Taurus]: Planent.Venus,
+//   [Star.Gemini]: Planent.Mercury,
+//   [Star.Cancer]: Planent.Moon,
+//   [Star.Leo]: Planent.Sun,
+//   [Star.Virgo]: Planent.Mercury,
+//   [Star.Libra]: Planent.Venus,
+//   [Star.Scorpio]: Planent.Mars,
+//   [Star.Sagittarius]: Planent.Jupiter,
+//   [Star.Capricorn]: Planent.Saturn,
+//   [Star.Aquarius]: Planent.Saturn,
+//   [Star.Pisces]: Planent.Jupiter,
+// } as const;
 
 export type DignityStatus = 'Domicile' | 'Exaltation' | 'Detriment' | 'Fall' | 'Peregrine';
 
