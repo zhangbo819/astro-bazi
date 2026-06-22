@@ -1,5 +1,5 @@
 import { ClassicalPlanent, ClassicalPlanentType, Planent, Star } from './constant';
-import { getPlanetDignityStatus } from './dignity';
+import { DignityStatus, getPlanetDignityStatus } from './dignity';
 import { AspectItem, PlanetItem } from './planets';
 
 // 埃及界限表
@@ -117,11 +117,19 @@ type calcReceptionRes = {
 }[];
 export function calcReception(
   planetList: PlanetItem[],
-  aspect: { between: AspectItem['between']; type: AspectItem['type'] }[]
+  aspect: { between: AspectItem['between']; type: AspectItem['type'] }[],
+  onlyDomicile?: boolean
 ): calcReceptionRes {
   const data = planetList.filter((i) =>
     ClassicalPlanent.includes(String(i.name) as ClassicalPlanentType)
   );
+
+  function verifyReception(type: DignityStatus) {
+    if (onlyDomicile) {
+      return type === 'Domicile';
+    }
+    return type === 'Domicile' || type === 'Exaltation';
+  }
 
   const res: calcReceptionRes = [];
   for (let i = 0, len = data.length; i < len - 1; i++) {
@@ -131,8 +139,8 @@ export function calcReception(
       const itemB = data[j];
       const reception1 = getPlanetDignityStatus(itemB.name, itemA.sign);
       const reception2 = getPlanetDignityStatus(itemA.name, itemB.sign);
-      const isReception1 = reception1 === 'Domicile' || reception1 === 'Exaltation';
-      const isReception2 = reception2 === 'Domicile' || reception2 === 'Exaltation';
+      const isReception1 = verifyReception(reception1);
+      const isReception2 = verifyReception(reception2);
 
       const common = {
         from: itemA.name,

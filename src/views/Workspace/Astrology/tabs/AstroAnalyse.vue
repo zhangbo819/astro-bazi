@@ -83,6 +83,11 @@
   <div class="content">
     <h2>接纳与互溶</h2>
 
+    <Row style="align-items: center">
+      <p style="margin-right: 8px">{{ bothDomicile ? '守护和入旺' : '仅守护接纳' }}</p>
+      <van-switch v-model="bothDomicile" />
+    </Row>
+
     <template v-if="planetReception.length">
       <p v-for="item in planetReception" :key="item.type + item.from + item.to">
         <span
@@ -501,10 +506,12 @@ const bounds = computed(() => {
 // console.log(planetState.value);
 
 // 互溶
+const bothDomicile = ref(true);
 const planetReception = computed(() => {
   return calcReception(
     store.planetList,
-    store.aspectData.map(({ between, type }) => ({ between, type }))
+    store.aspectData.map(({ between, type }) => ({ between, type })),
+    !bothDomicile.value
   );
 });
 </script>
