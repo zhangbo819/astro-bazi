@@ -37,7 +37,10 @@
         >&nbsp;<SignText :name="item.sign" text-only
       /></PlanetText>
       <template v-if="item.tripliity">
-        <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }} (+ 3)</span>
+        <span style="color: #67c23a"
+          >三分权：{{ item.tripliity.ruler }}
+          <template v-if="item.tripliity.index === 0">(+ 3)</template></span
+        >
       </template>
       <span v-else style="color: gray">无三分权</span>
       <p>
