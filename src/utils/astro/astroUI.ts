@@ -216,6 +216,7 @@ export const patternMap = {
 };
 
 export const DignityMap: Record<DignityStatus, { color: string; text: string; score: string }> = {
+  DomicileExaltation: { text: '庙 旺', color: '#67c23a', score: '+ 9' },
   Domicile: { text: '庙', color: '#67c23a', score: '+ 5' }, // 强能量（绿色）
   Exaltation: { text: '旺', color: '#409eff', score: '+ 4' }, // 较强（蓝色）
   Detriment: { text: '失势', color: '#e6a23c', score: '- 4' }, // 弱化（橙色）

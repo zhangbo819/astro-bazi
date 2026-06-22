@@ -84,7 +84,7 @@
     <h2>接纳与互溶</h2>
 
     <Row style="align-items: center">
-      <p style="margin-right: 8px">{{ bothDomicile ? '守护和入旺' : '仅守护接纳' }}</p>
+      <p style="margin-right: 8px">{{ bothDomicile ? '守护和入旺' : '仅守护' }}</p>
       <van-switch v-model="bothDomicile" />
     </Row>
 
@@ -92,22 +92,33 @@
       <p v-for="item in planetReception" :key="item.type + item.from + item.to">
         <span
           ><PlanetText :name="item.to">&nbsp;<SignText :name="item.toSign" text-only /></PlanetText>
-          {{ item.type === 'Reception' ? '接纳' : '与' }}
+          {{
+            item.type === 'Reception'
+              ? item.fromReceptionType === 'Domicile'
+                ? '守护接纳'
+                : '入旺接纳'
+              : '与'
+          }}
+          <!--  -->
           <PlanetText :name="item.from"
             >&nbsp;<SignText :name="item.fromSign" text-only
           /></PlanetText>
 
           <sapn v-if="item.type !== 'Reception'" style="margin-left: 8px">
-            {{ item.type === 'MutualReception' ? '互溶' : '互溶接纳 (强)' }}</sapn
-          >
+            <b>{{ item.type === 'MutualReception' ? '互溶' : '互溶接纳' }}</b>
+            ({{ item.fromReceptionType === 'Domicile' ? '守护' : '入旺' }} +
+            {{ item.toReceptionType === 'Domicile' ? '守护' : '入旺' }})
+          </sapn>
         </span>
       </p>
-      <p>两个星体同时接纳彼此则为互溶，互溶基础上产生相位则为互溶接纳，效果依次加强</p>
       <p>
-        <b
-          >互溶可以弥补星座落陷时损失的分数，效果：守护接纳 > 入旺接纳 > 三分接纳 > 界接纳 >
-          面接纳</b
+        两个星体同时接纳彼此则为互溶，互溶基础上产生相位则为互溶接纳。<i
+          >效果：互溶接纳 > 互溶 > 接纳</i
         >
+      </p>
+      <p>
+        互溶或接纳可以一定程度地增加行星的力量，搭配得当力量上甚至可以超越庙旺，但仍保留了落陷的戏剧性。
+        <i>效果：守护接纳 > 入旺接纳 > 三分接纳 > 界接纳 > 面接纳</i>
       </p>
       <p><i>(此处仅展示守护和入旺互溶接纳)</i></p>
     </template>

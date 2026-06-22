@@ -1,5 +1,5 @@
 import { ClassicalPlanent, ClassicalPlanentType, Planent, Star } from './constant';
-import { DignityStatus, getPlanetDignityStatus } from './dignity';
+import { DignityStatus, PLANENT_RULER_MAP_CLASS } from './dignity';
 import { AspectItem, PlanetItem } from './planets';
 
 // 埃及界限表
@@ -112,8 +112,10 @@ type calcReceptionRes = {
   type: 'MutualWithReception' | 'MutualReception' | 'Reception';
   from: PlanetItem['name'];
   fromSign: PlanetItem['sign'];
+  fromReceptionType?: 'Domicile' | 'Exaltation';
   to: PlanetItem['name'];
   toSign: PlanetItem['sign'];
+  toReceptionType?: 'Domicile' | 'Exaltation';
 }[];
 export function calcReception(
   planetList: PlanetItem[],
@@ -124,11 +126,11 @@ export function calcReception(
     ClassicalPlanent.includes(String(i.name) as ClassicalPlanentType)
   );
 
-  function verifyReception(type: DignityStatus) {
+  function verifyReception(type: DignityStatus | undefined) {
     if (onlyDomicile) {
-      return type === 'Domicile';
+      return type === 'Domicile' || type === 'DomicileExaltation';
     }
-    return type === 'Domicile' || type === 'Exaltation';
+    return type === 'Domicile' || type === 'DomicileExaltation' || type === 'Exaltation';
   }
 
   const res: calcReceptionRes = [];
@@ -137,16 +139,24 @@ export function calcReception(
     // console.log(itemA.name);
     for (let j = i + 1; j < len; j++) {
       const itemB = data[j];
-      const reception1 = getPlanetDignityStatus(itemB.name, itemA.sign);
-      const reception2 = getPlanetDignityStatus(itemA.name, itemB.sign);
-      const isReception1 = verifyReception(reception1);
-      const isReception2 = verifyReception(reception2);
+      // const reception1 = getPlanetDignityStatus(itemB.name, itemA.sign);
+      // const reception2 = getPlanetDignityStatus(itemA.name, itemB.sign);
+      const dignity1 = PLANENT_RULER_MAP_CLASS[itemA.sign].find(
+        (d) => d.planet === String(itemB.name)
+      )?.type;
+      const dignity2 = PLANENT_RULER_MAP_CLASS[itemB.sign].find(
+        (d) => d.planet === String(itemA.name)
+      )?.type;
+      const isReception1 = verifyReception(dignity1);
+      const isReception2 = verifyReception(dignity2);
 
       const common = {
         from: itemA.name,
         fromSign: itemA.sign,
+        fromReceptionType: dignity1,
         to: itemB.name,
         toSign: itemB.sign,
+        toReceptionType: dignity2,
       };
 
       if (isReception1 && isReception2) {
@@ -155,17 +165,17 @@ export function calcReception(
             aspectItem.between.includes(itemA.name) && aspectItem.between.includes(itemB.name)
         );
         if (aspectItem) {
-          res.push({ type: 'MutualWithReception', ...common });
+          res.push({ ...common, type: 'MutualWithReception' });
           // console.log(`${itemA.name} ${itemB.name} 互溶接纳`);
         } else {
-          res.push({ type: 'MutualReception', ...common });
+          res.push({ ...common, type: 'MutualReception' });
           // console.log(`${itemA.name} ${itemB.name} 互溶`);
         }
       } else if (isReception1 && !isReception2) {
         // console.log(`${itemB.name} ${itemB.sign} 接纳 ${itemA.name} ${itemA.sign}`);
         res.push({
-          type: 'Reception',
           ...common,
+          type: 'Reception',
         });
       } else if (!isReception1 && isReception2) {
         // console.log(`${itemA.name} ${itemA.sign} 接纳 ${itemB.name} ${itemB.sign}`);
@@ -173,14 +183,18 @@ export function calcReception(
           type: 'Reception',
           from: itemB.name,
           fromSign: itemB.sign,
+          fromReceptionType: dignity2,
           to: itemA.name,
           toSign: itemA.sign,
+          toReceptionType: dignity1,
         });
       }
     }
   }
 
   res.sort((a, b) => b.type.length - a.type.length);
+
+  console.log('res', res);
 
   return res;
 }

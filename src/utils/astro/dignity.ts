@@ -10,7 +10,7 @@ interface DignityData {
 }
 
 /**
- * 10 行星庙旺落陷核心配置表
+ * 10 行星庙旺落陷核心配置表 现代版
  * 包含古典 7 星 + 现代 3 王星
  */
 const PLANET_DIGNITIES: Record<BodyInUse, DignityData> = {
@@ -78,22 +78,49 @@ const PLANET_DIGNITIES: Record<BodyInUse, DignityData> = {
 };
 
 // 星座对应的守护星(古典)
-// const PLANENT_RULER_MAP_CLASS = {
-//   [Star.Aries]: Planent.Mars,
-//   [Star.Taurus]: Planent.Venus,
-//   [Star.Gemini]: Planent.Mercury,
-//   [Star.Cancer]: Planent.Moon,
-//   [Star.Leo]: Planent.Sun,
-//   [Star.Virgo]: Planent.Mercury,
-//   [Star.Libra]: Planent.Venus,
-//   [Star.Scorpio]: Planent.Mars,
-//   [Star.Sagittarius]: Planent.Jupiter,
-//   [Star.Capricorn]: Planent.Saturn,
-//   [Star.Aquarius]: Planent.Saturn,
-//   [Star.Pisces]: Planent.Jupiter,
-// } as const;
+export const PLANENT_RULER_MAP_CLASS = {
+  [Star.Aries]: [
+    { planet: Planent.Mars, type: 'Domicile' },
+    { planet: Planent.Sun, type: 'Exaltation' },
+  ],
+  [Star.Taurus]: [
+    { planet: Planent.Venus, type: 'Domicile' },
+    { planet: Planent.Moon, type: 'Exaltation' },
+  ],
+  [Star.Gemini]: [{ planet: Planent.Mercury, type: 'Domicile' }],
+  [Star.Cancer]: [
+    { planet: Planent.Moon, type: 'Domicile' },
+    { planet: Planent.Jupiter, type: 'Exaltation' },
+  ],
+  [Star.Leo]: [{ planet: Planent.Sun, type: 'Domicile' }],
+  [Star.Virgo]: [
+    { planet: Planent.Mercury, type: 'Domicile' },
+    { planet: Planent.Mercury, type: 'Exaltation' },
+  ],
+  [Star.Libra]: [
+    { planet: Planent.Venus, type: 'Domicile' },
+    { planet: Planent.Saturn, type: 'Exaltation' },
+  ],
+  [Star.Scorpio]: [{ planet: Planent.Mars, type: 'Domicile' }],
+  [Star.Sagittarius]: [{ planet: Planent.Jupiter, type: 'Domicile' }],
+  [Star.Capricorn]: [
+    { planet: Planent.Saturn, type: 'Domicile' },
+    { planet: Planent.Mars, type: 'Exaltation' },
+  ],
+  [Star.Aquarius]: [{ planet: Planent.Saturn, type: 'Domicile' }],
+  [Star.Pisces]: [
+    { planet: Planent.Jupiter, type: 'Domicile' },
+    { planet: Planent.Venus, type: 'Exaltation' },
+  ],
+} as const;
 
-export type DignityStatus = 'Domicile' | 'Exaltation' | 'Detriment' | 'Fall' | 'Peregrine';
+export type DignityStatus =
+  | 'Domicile'
+  | 'Exaltation'
+  | 'Detriment'
+  | 'Fall'
+  | 'Peregrine'
+  | 'DomicileExaltation'; // 既庙又旺，为适配古典水星处女
 
 /**
  * 获取行星在特定星座下的尊贵状态
@@ -103,6 +130,10 @@ export function getPlanetDignityStatus(planet: BodyInUse, currentSign: Star): Di
 
   // 1. 检查入庙
   if (data.domicile.includes(currentSign)) {
+    // TODO 古典和现代分开
+    if (planet === 'Mercury' && currentSign === Star.Virgo) {
+      return 'DomicileExaltation';
+    }
     return 'Domicile';
   }
 
