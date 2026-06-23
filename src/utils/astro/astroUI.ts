@@ -1,5 +1,5 @@
 import { PatternType } from './aspectPattern';
-import { AstroElement, AstroModality, BodyInUse, Star } from './constant';
+import { AstroElement, AstroModality, BodyInUse, Planent, Star } from './constant';
 import { DignityStatus } from './dignity';
 
 export const AstroElementMap: Record<AstroElement, { name: string; color: string }> = {
@@ -23,7 +23,7 @@ export const AstroModalityMap: Record<AstroModality, { name: string; color: stri
 };
 
 export const planentsMap: Record<
-  BodyInUse,
+  BodyInUse | Planent,
   { name: string; n?: string; color: string; symbol: string }
 > = {
   Sun: { name: '太阳', n: '日', color: eColors.Fire, symbol: '☉' }, // 红色（太阳）

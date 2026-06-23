@@ -108,7 +108,7 @@ export function calcBound(sign: Star, degree: number) {
 }
 
 // 计算 接纳 互溶 互溶接纳
-type calcReceptionRes = {
+export type calcReceptionRes = {
   type: 'MutualWithReception' | 'MutualReception' | 'Reception';
   from: PlanetItem['name'];
   fromSign: PlanetItem['sign'];
@@ -194,7 +194,7 @@ export function calcReception(
 
   res.sort((a, b) => b.type.length - a.type.length);
 
-  console.log('res', res);
+  // console.log('res', res);
 
   return res;
 }

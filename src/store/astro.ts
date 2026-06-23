@@ -2,6 +2,7 @@ import { computed, ref, shallowRef, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { aspectPosition, getAllPlanets, PlanetItem } from '@/utils/astro/planets';
 import { AspectPatternEngine, ConjunctionGroup, Pattern } from '@/utils/astro/aspectPattern';
+import { calcReception, calcReceptionRes } from '@/utils/astro/bounds';
 
 export const useAstroStore = defineStore('astro', () => {
   const time = ref(new Date());
@@ -52,6 +53,17 @@ export const useAstroStore = defineStore('astro', () => {
     stellium.value = res.stellium;
   });
 
+  // 互溶
+  const bothDomicile = ref(true);
+  const planetReception = shallowRef<calcReceptionRes>([]);
+  watch([() => aspectData.value, () => planetList.value], () => {
+    planetReception.value = calcReception(
+      planetList.value,
+      aspectData.value.map(({ between, type }) => ({ between, type })),
+      !bothDomicile.value
+    );
+  });
+
   return {
     time,
     planetList,
@@ -60,5 +72,7 @@ export const useAstroStore = defineStore('astro', () => {
     patternData,
     conjunctionGroups,
     stellium,
+    bothDomicile,
+    planetReception,
   };
 });
