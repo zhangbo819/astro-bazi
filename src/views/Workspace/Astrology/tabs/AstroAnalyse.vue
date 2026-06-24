@@ -37,20 +37,25 @@
 
   <div class="content">
     <h1>古典行星评分</h1>
+    <div>
+      <p v-for="item in store.classicalScore" :key="item.name">
+        <PlanetText :style="{ marginRight: '8px' }" :name="item.name"
+          >&nbsp;<SignText :name="item.sign"
+        /></PlanetText>
+        {{ item.score }} 分
+      </p>
+    </div>
     <h2>三分主星(标准多罗修斯)</h2>
     <Row style="align-items: center">
-      <p style="margin-right: 8px">{{ isDay ? '日盘' : '夜盘' }}</p>
-      <van-switch v-model="isDay" />
+      <p style="margin-right: 8px">{{ store.isDayByTriplicity ? '日盘' : '夜盘' }}</p>
+      <van-switch v-model="store.isDayByTriplicity" />
     </Row>
-    <div v-for="item in triplicity" :key="item.name" class="chain">
+    <div v-for="item in store.triplicity" :key="item.name" class="chain">
       <PlanetText :style="{ marginRight: '8px' }" :name="item.name"
         >&nbsp;<SignText :name="item.sign"
       /></PlanetText>
       <template v-if="item.tripliity">
-        <span style="color: #67c23a"
-          >三分权：{{ item.tripliity.ruler }}
-          <template v-if="item.tripliity.index === 0">(+ 3)</template></span
-        >
+        <span style="color: #67c23a">三分权：{{ item.tripliity.ruler }} (+ 3)</span>
       </template>
       <span v-else style="color: gray">无三分权</span>
       <p>
@@ -147,7 +152,6 @@ import Row from '@/components/Row.vue';
 import { DignityMap, planentsMap } from '@/utils/astro/astroUI';
 import { Planent } from '@/utils/astro/constant';
 import { getBoundChains } from '@/utils/astro/bounds';
-import { calcTriplicity } from '@/utils/astro/triplicity';
 import PlanetText from '../components/PlanetText.vue';
 import SignText from '../components/SignText.vue';
 import ReceptionGraph from '../components/map/ReceptionGraph.vue';
@@ -182,12 +186,6 @@ const onClickInterPret = async () => {
   await AIStore.apiGetInterPret(params);
   AIBtnLoading.value = false;
 };
-
-// 三分主星
-const isDay = ref(true);
-const triplicity = computed(() => {
-  return calcTriplicity(store.planetList, isDay.value);
-});
 
 // 行星界限
 const bounds = computed(() => {

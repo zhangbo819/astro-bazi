@@ -22,14 +22,15 @@ const rules_night: Record<AstroElement, [Planent, Planent, Planent]> = {
   Water: [Planent.Mars, Planent.Venus, Planent.Moon],
 };
 
-export function calcTriplicity(planetList: PlanetItem[], isDay: boolean) {
+export type calcTriplicityRes = {
+  name: Planent;
+  sign: Star;
+  rule: [Planent, Planent, Planent];
+  tripliity: { index: number; ruler: string } | null;
+}[];
+export function calcTriplicity(planetList: PlanetItem[], isDay: boolean): calcTriplicityRes {
   const rule = isDay ? rules_day : rules_night;
-  const res: {
-    name: Planent;
-    sign: Star;
-    rule: [Planent, Planent, Planent];
-    tripliity: { index: number; ruler: string } | null;
-  }[] = [];
+  const res: calcTriplicityRes = [];
 
   const ruler_map = isDay
     ? ['日盘主星', '夜盘主星', '参与主星']
