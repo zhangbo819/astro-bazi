@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts" setup>
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useAstroStore } from '@/store/astro';
 import { planentsMap } from '@/utils/astro/astroUI';
 import { ClassicalPlanent, Planent } from '@/utils/astro/constant';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 const store = useAstroStore();
 

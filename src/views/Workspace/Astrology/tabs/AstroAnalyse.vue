@@ -11,6 +11,19 @@
     </p>
   </div>
 
+  <div class="content">
+    <h2>星群</h2>
+    <div v-for="item in store.stellium" :key="item.name">
+      <SignText :name="item.name"> <template #prev>群星</template> </SignText>：
+      <PlanetText
+        v-for="p in item.data"
+        :key="p.name"
+        :name="p.name"
+        :style="{ marginRight: '8px' }"
+      />
+    </div>
+  </div>
+
   <Row class="content" style="justify-content: space-between">
     <div />
     <van-button

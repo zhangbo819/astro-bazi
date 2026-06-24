@@ -1,6 +1,6 @@
 <template>
   <span v-if="!textOnly" :style="{ color: map12[name].color }"
-    >{{ map12[name].name }}
+    ><slot name="prev" />{{ map12[name].name }}
     <slot />
   </span>
   <template v-else>{{ map12[name].name }}</template>
