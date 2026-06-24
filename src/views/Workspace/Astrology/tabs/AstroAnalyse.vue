@@ -1,7 +1,7 @@
 <template>
   <Elem4Moda3 />
 
-  <div class="content">
+  <div class="content" v-if="store.conjunctionGroups.length">
     <h2>合相群</h2>
     <p v-for="(item, index) in store.conjunctionGroups" :key="index">
       合相群{{ index + 1 }}:
@@ -9,7 +9,7 @@
     </p>
   </div>
 
-  <div class="content">
+  <div class="content" v-if="store.stellium.length">
     <h2>星群</h2>
     <div v-for="item in store.stellium" :key="item.name">
       <SignText :name="item.name"> <template #prev>群星</template> </SignText>：
@@ -44,7 +44,7 @@
     </Row>
     <div v-for="item in triplicity" :key="item.name" class="chain">
       <PlanetText :style="{ marginRight: '8px' }" :name="item.name"
-        >&nbsp;<SignText :name="item.sign" text-only
+        >&nbsp;<SignText :name="item.sign"
       /></PlanetText>
       <template v-if="item.tripliity">
         <span style="color: #67c23a"
@@ -73,7 +73,7 @@
     <h2>界限图(埃及表)</h2>
     <h3>行星界限</h3>
     <p v-for="planet in store.planetList" :key="planet.name" class="chain">
-      <PlanetText :name="planet.name">&nbsp;<SignText :name="planet.sign" text-only /></PlanetText>
+      <PlanetText :name="planet.name">&nbsp;<SignText :name="planet.sign" /></PlanetText>
       <span
         v-if="DignityMap[planet.dignity].text"
         :style="{ color: DignityMap[planet.dignity].color }"
@@ -105,7 +105,7 @@
     <template v-if="store.planetReception.length">
       <p v-for="item in store.planetReception" :key="item.type + item.from + item.to">
         <span
-          ><PlanetText :name="item.to">&nbsp;<SignText :name="item.toSign" text-only /></PlanetText>
+          ><PlanetText :name="item.to">&nbsp;<SignText :name="item.toSign" /></PlanetText>
           {{
             item.type === 'Reception'
               ? item.fromReceptionType === 'Domicile'
@@ -114,9 +114,7 @@
               : '与'
           }}
           <!--  -->
-          <PlanetText :name="item.from"
-            >&nbsp;<SignText :name="item.fromSign" text-only
-          /></PlanetText>
+          <PlanetText :name="item.from">&nbsp;<SignText :name="item.fromSign" /></PlanetText>
 
           <sapn v-if="item.type !== 'Reception'" style="margin-left: 8px">
             <b>{{ item.type === 'MutualReception' ? '互溶' : '互溶接纳' }}</b>

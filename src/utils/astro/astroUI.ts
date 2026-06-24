@@ -1,3 +1,4 @@
+import { mixHexColors } from '.';
 import { PatternType } from './aspectPattern';
 import { AstroElement, AstroModality, BodyInUse, Planent, Star } from './constant';
 import { DignityStatus } from './dignity';
@@ -27,15 +28,33 @@ export const planentsMap: Record<
   { name: string; n?: string; color: string; symbol: string }
 > = {
   Sun: { name: '太阳', n: '日', color: eColors.Fire, symbol: '☉' }, // 红色（太阳）
-  Moon: { name: '月亮', color: eColors.Water, symbol: '☾' }, // 月光蓝（情绪/柔和）
-  Mercury: { name: '水星', color: eColors.Air, symbol: '☿' }, // 青绿色（思维/流动）
-  Venus: { name: '金星', color: eColors.Air, symbol: '♀' }, // 粉玫瑰（爱/美感）
-  Mars: { name: '火星', color: eColors.Fire, symbol: '♂' }, // 火红（行动力）
-  Jupiter: { name: '木星', color: eColors.Fire, symbol: '♃' }, // 紫色（扩张/幸运）
-  Saturn: { name: '土星', color: eColors.Earth, symbol: '♄' }, // 深灰蓝（结构/限制）
+  Moon: { name: '月亮', color: mixHexColors(eColors.Water, eColors.Earth, 0.33), symbol: '☾' }, // 月光蓝（情绪/柔和）
+  Mercury: { name: '水星', color: mixHexColors(eColors.Air, eColors.Earth), symbol: '☿' }, // 青绿色（思维/流动）
+  Venus: {
+    name: '金星',
+    color: mixHexColors(mixHexColors(eColors.Air, eColors.Earth), eColors.Water),
+    symbol: '♀',
+  }, // 粉玫瑰（爱/美感）
+  Mars: {
+    name: '火星',
+    color: mixHexColors(mixHexColors(eColors.Fire, eColors.Water, 0.33), eColors.Earth),
+    symbol: '♂',
+  }, // 火红（行动力）
+  Jupiter: { name: '木星', color: mixHexColors(eColors.Fire, eColors.Water, 0.67), symbol: '♃' }, // 紫色（扩张/幸运）
+  Saturn: { name: '土星', color: mixHexColors(eColors.Earth, eColors.Air, 0.33), symbol: '♄' }, // 深灰蓝（结构/限制）
   Uranus: { name: '天王星', color: eColors.Air, symbol: '♅' }, // 电光青（变革）
   Neptune: { name: '海王星', color: eColors.Water, symbol: '♆' }, // 深海蓝（幻想/灵性）
   Pluto: { name: '冥王星', color: eColors.Water, symbol: '♇' }, // 深紫（转化/深层力量）
+  // Sun: { name: '太阳', n: '日', color: eColors.Fire, symbol: '☉' }, // 红色（太阳）
+  // Moon: { name: '月亮', color: eColors.Water, symbol: '☾' }, // 月光蓝（情绪/柔和）
+  // Mercury: { name: '水星', color: eColors.Air, symbol: '☿' }, // 青绿色（思维/流动）
+  // Venus: { name: '金星', color: eColors.Air, symbol: '♀' }, // 粉玫瑰（爱/美感）
+  // Mars: { name: '火星', color: eColors.Fire, symbol: '♂' }, // 火红（行动力）
+  // Jupiter: { name: '木星', color: eColors.Fire, symbol: '♃' }, // 紫色（扩张/幸运）
+  // Saturn: { name: '土星', color: eColors.Earth, symbol: '♄' }, // 深灰蓝（结构/限制）
+  // Uranus: { name: '天王星', color: eColors.Air, symbol: '♅' }, // 电光青（变革）
+  // Neptune: { name: '海王星', color: eColors.Water, symbol: '♆' }, // 深海蓝（幻想/灵性）
+  // Pluto: { name: '冥王星', color: eColors.Water, symbol: '♇' }, // 深紫（转化/深层力量）
 };
 
 export const planetTexts: Record<

@@ -62,6 +62,9 @@ const init = () => {
           { name: Planent.Saturn, x: 187, y: 249 },
         ].map((item: any, index) => {
           item.name = planentsMap[ClassicalPlanent[index]].name;
+          item.itemStyle = {
+            color: planentsMap[ClassicalPlanent[index]].color,
+          };
           return item;
         }),
 
