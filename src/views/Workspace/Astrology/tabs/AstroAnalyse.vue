@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <Elem4Moda3 />
-  </div>
+  <Elem4Moda3 />
 
   <div class="content">
     <h2>合相群</h2>
@@ -93,6 +91,7 @@
         <PlanetText v-if="planet" :name="planet" />
       </span>
     </p>
+    <BoundsGraph />
   </div>
 
   <div class="content">
@@ -155,6 +154,7 @@ import PlanetText from '../components/PlanetText.vue';
 import SignText from '../components/SignText.vue';
 import ReceptionGraph from '../components/map/ReceptionGraph.vue';
 import Elem4Moda3 from '../components/map/Elem4Moda3.vue';
+import BoundsGraph from '../components/map/BoundsGraph.vue';
 
 const store = useAstroStore();
 
