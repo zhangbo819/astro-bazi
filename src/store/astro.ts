@@ -56,7 +56,7 @@ export const useAstroStore = defineStore('astro', () => {
   // 互溶
   const bothDomicile = ref(true);
   const planetReception = shallowRef<calcReceptionRes>([]);
-  watch([() => aspectData.value, () => planetList.value], () => {
+  watch([() => aspectData.value, () => planetList.value, () => bothDomicile.value], () => {
     planetReception.value = calcReception(
       planetList.value,
       aspectData.value.map(({ between, type }) => ({ between, type })),
