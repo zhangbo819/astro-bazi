@@ -14,7 +14,7 @@ const refMap = ref();
 let myChart: any;
 
 const init = () => {
-  //   console.log('planetReception', store.planetReception);
+  // console.log('planetReception', store.planetReception);
   const links = store.planetReception.reduce(
     (r: { source: number; target: number; lineStyle?: any }[], item) => {
       const from = ClassicalPlanent.findIndex((p) => p === String(item.from));
@@ -24,7 +24,7 @@ const init = () => {
         source: from,
         target: to,
         lineStyle: {
-          color: item.type === 'Reception' ? '#000' : '#67c23a',
+          color: item.hasAspect ? '#67c23a' : '#000',
         },
       });
 
@@ -33,7 +33,7 @@ const init = () => {
           source: to,
           target: from,
           lineStyle: {
-            color: '#67c23a',
+            color: item.hasAspect ? '#67c23a' : '#000',
           },
         });
       }

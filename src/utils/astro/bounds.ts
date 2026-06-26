@@ -116,6 +116,7 @@ export type calcReceptionRes = {
   to: PlanetItem['name'];
   toSign: PlanetItem['sign'];
   toReceptionType?: 'Domicile' | 'Exaltation';
+  hasAspect: boolean;
 }[];
 export function calcReception(
   planetList: PlanetItem[],
@@ -150,6 +151,11 @@ export function calcReception(
       const isReception1 = verifyReception(dignity1);
       const isReception2 = verifyReception(dignity2);
 
+      const aspectItem = aspect.find(
+        (aspectItem) =>
+          aspectItem.between.includes(itemA.name) && aspectItem.between.includes(itemB.name)
+      );
+
       const common = {
         from: itemA.name,
         fromSign: itemA.sign,
@@ -157,13 +163,10 @@ export function calcReception(
         to: itemB.name,
         toSign: itemB.sign,
         toReceptionType: dignity2,
+        hasAspect: !!aspectItem,
       };
 
       if (isReception1 && isReception2) {
-        const aspectItem = aspect.find(
-          (aspectItem) =>
-            aspectItem.between.includes(itemA.name) && aspectItem.between.includes(itemB.name)
-        );
         if (aspectItem) {
           res.push({ ...common, type: 'MutualWithReception' });
           // console.log(`${itemA.name} ${itemB.name} 互溶接纳`);
@@ -180,6 +183,7 @@ export function calcReception(
       } else if (!isReception1 && isReception2) {
         // console.log(`${itemA.name} ${itemA.sign} 接纳 ${itemB.name} ${itemB.sign}`);
         res.push({
+          ...common,
           type: 'Reception',
           from: itemB.name,
           fromSign: itemB.sign,
