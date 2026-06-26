@@ -71,11 +71,13 @@ import { DignityMap, map12, planentsMap } from '@/utils/astro/astroUI';
 import AstroOperation from '@/views/Workspace/Astrology/components/AstroOperation.vue';
 import AstroRoundPlate from '@/views/Workspace/Astrology/components/AstroRoundPlate.vue';
 import AIPopup from '@/components/AIPopup.vue';
+import { useAstroStore } from '@/store/astro';
 
 const storeAI = useAIStore();
+const storeAstro = useAstroStore();
 // const time = ref(new Date('2013-07-29T04:30:00Z'));
 // const time = ref(new Date('2010-08-07T00:00:00Z'));
-const time = ref(new Date());
+const time = ref(storeAstro.time);
 
 const data = computed(() => {
   return getAllPlanets(time.value);
