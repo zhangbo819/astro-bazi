@@ -58,7 +58,7 @@ export const useAstroStore = defineStore('astro', () => {
 
   // 古典分数
   const classicalScore = ref<
-    { name: PlanetItem['name']; sign: PlanetItem['sign']; score: number }[]
+    { name: PlanetItem['name']; sign: PlanetItem['sign']; score: number; color: string }[]
   >([]);
   // 三分主星
   const isDayByTriplicity = ref(true);
@@ -78,12 +78,13 @@ export const useAstroStore = defineStore('astro', () => {
           ? 3
           : 0;
         const bounds_score = p.bound === String(p.name) ? 2 : 0;
-        // 还差一个 面
-        const score = dignity_score + triplicity_score + bounds_score;
+        const face_score = p.face === String(p.name) ? 1 : 0;
+        const score = dignity_score + triplicity_score + bounds_score + face_score;
         return {
           name: p.name,
           sign: p.sign,
           score,
+          color: score >= 5 ? '#67c23a' : score <= -5 ? '#f56c6c' : '#000',
         };
       });
   });

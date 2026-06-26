@@ -255,3 +255,31 @@ export function getBoundChains(
 
   return res;
 }
+
+// 面
+const FACE = {
+  [Star.Aries]: [Planent.Mars, Planent.Sun, Planent.Venus],
+  [Star.Taurus]: [Planent.Mercury, Planent.Moon, Planent.Saturn],
+  [Star.Gemini]: [Planent.Jupiter, Planent.Mars, Planent.Sun],
+  [Star.Cancer]: [Planent.Venus, Planent.Mercury, Planent.Moon],
+  [Star.Leo]: [Planent.Saturn, Planent.Jupiter, Planent.Mars],
+  [Star.Virgo]: [Planent.Sun, Planent.Venus, Planent.Mercury],
+  [Star.Libra]: [Planent.Moon, Planent.Saturn, Planent.Jupiter],
+  [Star.Scorpio]: [Planent.Mars, Planent.Sun, Planent.Venus],
+  [Star.Sagittarius]: [Planent.Mercury, Planent.Moon, Planent.Saturn],
+  [Star.Capricorn]: [Planent.Jupiter, Planent.Mars, Planent.Sun],
+  [Star.Aquarius]: [Planent.Venus, Planent.Mercury, Planent.Moon],
+  [Star.Pisces]: [Planent.Saturn, Planent.Jupiter, Planent.Mars],
+};
+
+export function calcFace(sign: Star, degree: number) {
+  let index = 0;
+  if (degree >= 0 && degree < 10) {
+    index = 0;
+  } else if (degree >= 10 && degree < 20) {
+    index = 1;
+  } else {
+    index = 2;
+  }
+  return FACE[sign][index];
+}

@@ -13,7 +13,7 @@ import {
   Star,
 } from './constant';
 import { DignityStatus, getPlanetDignityStatus } from './dignity';
-import { calcBound } from './bounds';
+import { calcBound, calcFace } from './bounds';
 
 const SIGNS = [
   Star.Aries,
@@ -40,6 +40,7 @@ export interface PlanetItem {
   modality: AstroModality;
   dignity: DignityStatus;
   bound: null | Planent;
+  face: Planent;
 }
 
 // 拿单行星落座
@@ -68,6 +69,7 @@ export function getAllPlanets(date = new Date()): PlanetItem[] {
       modality: SIGN_MODALITY_MAP[info.sign],
       dignity: getPlanetDignityStatus(info.name, info.sign),
       bound: calcBound(info.sign, info.degree),
+      face: calcFace(info.sign, info.degree),
     };
   });
 }

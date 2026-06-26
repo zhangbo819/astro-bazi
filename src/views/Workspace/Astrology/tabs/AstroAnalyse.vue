@@ -37,12 +37,13 @@
 
   <div class="content">
     <h1>古典行星评分</h1>
+    <h2>先天分数</h2>
     <div>
       <p v-for="item in store.classicalScore" :key="item.name">
         <PlanetText :style="{ marginRight: '8px' }" :name="item.name"
           >&nbsp;<SignText :name="item.sign"
         /></PlanetText>
-        {{ item.score }} 分
+        <span :style="{ color: item.color }">{{ item.score }} 分</span>
       </p>
     </div>
     <h2>三分主星(标准多罗修斯)</h2>
@@ -91,12 +92,22 @@
 
     <h3>界限链路</h3>
     <p v-for="(chain, index) in bounds" :key="index" class="chain">
-      <span v-for="(planet, j) in chain">
+      <span v-for="(planet, j) in chain" :key="j">
         <span v-if="j !== 0"> -> </span>
         <PlanetText v-if="planet" :name="planet" />
       </span>
     </p>
     <BoundsGraph />
+  </div>
+
+  <div class="content">
+    <h2>面(迦勒底星序)</h2>
+    <p v-for="planet in store.planetList" :key="planet.name" class="chain">
+      <PlanetText :name="planet.name">&nbsp;<SignText :name="planet.sign" /></PlanetText>
+      位于
+      <PlanetText v-if="planet.face" :name="planet.face">面</PlanetText>
+      <span v-if="String(planet.name) === planet.face" style="color: #67c23a"> (本位 + 1)</span>
+    </p>
   </div>
 
   <div class="content">

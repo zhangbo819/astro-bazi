@@ -120,7 +120,8 @@ export type DignityStatus =
   | 'Detriment'
   | 'Fall'
   | 'Peregrine'
-  | 'DomicileExaltation'; // 既庙又旺，为适配古典水星处女
+  | 'DomicileExaltation' // 既庙又旺，为适配古典水星处女
+  | 'DetrimentFall'; // 既失势又落陷，为适配古典水双鱼
 
 /**
  * 获取行星在特定星座下的尊贵状态
@@ -144,6 +145,9 @@ export function getPlanetDignityStatus(planet: BodyInUse, currentSign: Star): Di
 
   // 3. 检查失势
   if (Array.isArray(data.detriment) && data.detriment.includes(currentSign)) {
+    if (planet === 'Mercury' && currentSign === Star.Pisces) {
+      return 'DetrimentFall';
+    }
     return 'Detriment';
   }
 
