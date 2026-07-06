@@ -20,9 +20,13 @@ function toModalityRadarData(distribution: AstroDistribution) {
 }
 
 function getRadarMax(values: number[]) {
-  const max = Math.max(...values);
+  let max = Math.max(...values);
 
-  return Math.ceil((max + 1) / 2) * 2;
+  if (max > 7) {
+    max = 7;
+  }
+
+  return max;
 }
 
 const refMap = ref();
@@ -31,8 +35,10 @@ const init = () => {
   const distribution = buildDistribution(store.planetList);
   const elementValue = toElementRadarData(distribution);
   const modalityValue = toModalityRadarData(distribution);
+  console.log(elementValue, modalityValue);
   const max_4 = getRadarMax(elementValue);
   const max_3 = getRadarMax(modalityValue);
+  console.log(max_4, max_3);
   const option = {
     backgroundColor: 'transparent',
     tooltip: {

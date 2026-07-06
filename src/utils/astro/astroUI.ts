@@ -43,8 +43,8 @@ export const planentsMap: Record<
   Jupiter: { name: '木星', color: mixHexColors(eColors.Fire, eColors.Water, 0.67), symbol: '♃' }, // 紫色（扩张/幸运）
   Saturn: { name: '土星', color: mixHexColors(eColors.Earth, eColors.Air, 0.33), symbol: '♄' }, // 深灰蓝（结构/限制）
   Uranus: { name: '天王星', color: eColors.Air, symbol: '♅' }, // 电光青（变革）
-  Neptune: { name: '海王星', color: eColors.Water, symbol: '♆' }, // 深海蓝（幻想/灵性）
-  Pluto: { name: '冥王星', color: eColors.Water, symbol: '♇' }, // 深紫（转化/深层力量）
+  Neptune: { name: '海王星', color: mixHexColors(eColors.Water, '#000000', 0.1), symbol: '♆' }, // 深海蓝（幻想/灵性）
+  Pluto: { name: '冥王星', color: mixHexColors(eColors.Water, '#000000', 0.4), symbol: '♇' }, // 深紫（转化/深层力量）
   // Sun: { name: '太阳', n: '日', color: eColors.Fire, symbol: '☉' }, // 红色（太阳）
   // Moon: { name: '月亮', color: eColors.Water, symbol: '☾' }, // 月光蓝（情绪/柔和）
   // Mercury: { name: '水星', color: eColors.Air, symbol: '☿' }, // 青绿色（思维/流动）
