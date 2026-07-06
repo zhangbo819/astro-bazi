@@ -129,14 +129,14 @@
                 : '入旺接纳'
               : '与'
           }}
-          <!--  -->
+
           <PlanetText :name="item.from">&nbsp;<SignText :name="item.fromSign" /></PlanetText>
 
-          <sapn v-if="item.type !== 'Reception'" style="margin-left: 8px">
+          <span v-if="item.type !== 'Reception'" style="margin-left: 4px">
             <b>{{ item.type === 'MutualReception' ? '互溶' : '互溶接纳' }}</b>
             ({{ item.fromReceptionType === 'Domicile' ? '守护' : '入旺' }} +
             {{ item.toReceptionType === 'Domicile' ? '守护' : '入旺' }})
-          </sapn>
+          </span>
         </span>
       </p>
       <p>
