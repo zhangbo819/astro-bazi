@@ -135,7 +135,7 @@
               结束时间 {{ item.window.end.toLocaleDateString() }}
               {{ item.window.end.getHours() }}:{{ item.window.end.getMinutes() }}
             </p>
-            <!-- <p class="value">计算耗时 {{ item.window._t }} ms</p> -->
+            <i class="value">计算耗时 {{ item.window._t }} ms</i>
           </template>
         </van-cell>
       </van-cell-group>

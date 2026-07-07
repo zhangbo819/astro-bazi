@@ -132,7 +132,7 @@ export enum Aspect {
 export interface AspectItem {
   between: [PlanetItem['name'], PlanetItem['name']];
   type: Aspect;
-  angle: string;
+  angle: string; // 实际角距离，两个星体真实经度的差 actualAngle 更适合
   orb: number;
   strength: 'strong' | 'normal';
 }
@@ -159,10 +159,12 @@ class AspectPosition {
     if (n1 === Body.Moon || n2 === Body.Moon) return baseOrb + 2;
     return baseOrb;
   }
+  // 获取两个经度之间的实际夹角差，a b 都应该是经度
   private getAngleDiff(a: number, b: number) {
     const diff = Math.abs(a - b);
     return diff > 180 ? 360 - diff : diff;
   }
+
   private getAspect(n1: PlanetItem['name'], n2: PlanetItem['name'], diff: number) {
     for (const asp of this.ASPECTS) {
       const orb = this.getDynamicOrb(n1, n2, asp.orb);
@@ -223,17 +225,26 @@ class AspectPosition {
 
   // 判断是否命中相位
   private isAspectHit(diff: number, target: number, orb: number) {
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    diff = Math.abs(diff);
+
     return Math.abs(diff - target) <= orb;
   }
 
   // 算每 deg/hour
-  private getRelativeSpeed(date: Date, b1: PlanetItem['name'], b2: PlanetItem['name']): number {
+  private getRelativeSpeed(date: Date, b1: PlanetItem['name'], b2: PlanetItem['name']) {
     const dt = 60 * 60 * 1000;
 
     const d1 = PairLongitude(b1, b2, date);
     const d2 = PairLongitude(b1, b2, new Date(date.getTime() + dt));
 
-    return this.getAngleDiff(d1, d2); // deg/hour
+    let diff = d2 - d1;
+
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+
+    return Math.abs(diff);
   }
 
   // 根据行星获取动态的步长，快行星走的快，慢行星走的慢，优化计算速度
@@ -241,7 +252,7 @@ class AspectPosition {
     date: Date,
     b1: PlanetItem['name'],
     b2: PlanetItem['name'],
-    target: number,
+    actualAngle: number,
     orb: number
   ) {
     const speed = this.getRelativeSpeed(date, b1, b2); // deg/hour
@@ -263,7 +274,8 @@ class AspectPosition {
     step = Math.max(MIN, Math.min(MAX, step));
 
     const diff = PairLongitude(b1, b2, date);
-    const distance = Math.abs(diff - target);
+    const distance = this.getAngleDiff(diff, actualAngle); // TODO 这里用 getOrb 更合理，但实际测试发现，（开始、结束、最强）计算结果一致，且当前这样总耗时更小，所以暂时不变
+    // console.log(distance, this.getOrb(diff, actualAngle));
 
     // 越接近相位 → step 越小
     const factor = Math.max(distance / orb, 0.1);
@@ -278,19 +290,22 @@ class AspectPosition {
     b1: PlanetItem['name'],
     b2: PlanetItem['name'],
     get: (d: Date) => number,
-    target: number,
+    actualAngle: number,
     orb: number,
     direction: 1 | -1
   ) {
     let t = new Date(date);
 
     // 动态计算步数
-    const stepMs = this.getDynamicStepMs(t, b1, b2, target, orb);
+    const stepMs = this.getDynamicStepMs(t, b1, b2, actualAngle, orb);
 
     // 先扫出边界区间
-    while (this.isAspectHit(get(t), target, orb)) {
+    // let count = 0;
+    while (this.isAspectHit(get(t), actualAngle, orb)) {
       t = new Date(t.getTime() + direction * stepMs);
+      // count++;
     }
+    // console.log(b1 + '_' + b2 + ': ' + count);
 
     // 二分精确边界
     let t1 = new Date(t.getTime() - direction * stepMs);
@@ -298,7 +313,7 @@ class AspectPosition {
 
     for (let i = 0; i < 20; i++) {
       const mid = new Date((t1.getTime() + t2.getTime()) / 2);
-      const hit = this.isAspectHit(get(mid), target, orb);
+      const hit = this.isAspectHit(get(mid), actualAngle, orb);
 
       if (hit) {
         t1 = mid;
@@ -310,25 +325,42 @@ class AspectPosition {
     return new Date((t1.getTime() + t2.getTime()) / 2);
   }
 
+  // 实际夹角与需要相位的差
+  private getOrb(angle: number, aspectAngle: number) {
+    if (angle > 180) {
+      angle = 360 - angle;
+    }
+    const diff = Math.abs(angle - aspectAngle);
+    return diff;
+  }
+
   // 找精确相位（exact）
-  private findExact(date: Date, get: (d: Date) => number, target: number) {
-    let t1 = new Date(date.getTime() - 2 * 24 * 3600 * 1000);
-    let t2 = new Date(date.getTime() + 2 * 24 * 3600 * 1000);
+  private findExact(
+    start: Date,
+    end: Date,
+    get: (d: Date) => number,
+    actualAngle: number,
+    _useLog: boolean = false
+  ) {
+    let left = start.getTime();
+    let right = end.getTime();
 
-    for (let i = 0; i < 25; i++) {
-      const mid = new Date((t1.getTime() + t2.getTime()) / 2);
+    while (right - left > 1000) {
+      // 精度 1 秒
+      const m1 = left + (right - left) / 3;
+      const m2 = right - (right - left) / 3;
 
-      const d1 = get(t1) - target;
-      const dmid = get(mid) - target;
+      const d1 = this.getOrb(get(new Date(m1)), actualAngle);
+      const d2 = this.getOrb(get(new Date(m2)), actualAngle);
 
-      if (d1 * dmid <= 0) {
-        t2 = mid;
+      if (d1 < d2) {
+        right = m2;
       } else {
-        t1 = mid;
+        left = m1;
       }
     }
 
-    return new Date((t1.getTime() + t2.getTime()) / 2);
+    return new Date((left + right) / 2);
   }
 
   // Applying / Separating 入相/出相
@@ -349,12 +381,12 @@ class AspectPosition {
     // TODO 优化 use map
     const item = this.ASPECTS.find((i) => i.name === aspect);
 
-    const target = item!.angle;
+    const actualAngle = item!.angle; // 实际夹角
     const orb = this.getDynamicOrb(b1, b2, item!.orb);
 
-    const start = this.findBoundary(date, b1, b2, get, target, orb, -1);
-    const end = this.findBoundary(date, b1, b2, get, target, orb, +1);
-    const exact = this.findExact(date, get, target);
+    const start = this.findBoundary(date, b1, b2, get, actualAngle, orb, -1);
+    const end = this.findBoundary(date, b1, b2, get, actualAngle, orb, +1);
+    const exact = this.findExact(start, end, get, actualAngle); // _useLog b1 === 'Sun' && b2 === 'Pluto'
 
     const _t = Date.now() - _now.getTime(); // debug 用
 
