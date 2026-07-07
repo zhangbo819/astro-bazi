@@ -47,9 +47,9 @@ export function useResetLongitude(data: Ref<PlanetItem[]>) {
 
           // TODO bug: 现在顺时针时还会有问题
           // debug
-          if (p.name === 'Moon') {
-            console.log(fixed);
-          }
+          // if (p.name === 'Moon') {
+          //   console.log(fixed);
+          // }
 
           // ⭐ 在这里做“安全重置”
           const LIMIT = 400;
