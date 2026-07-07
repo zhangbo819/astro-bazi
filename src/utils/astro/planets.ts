@@ -135,7 +135,8 @@ export interface AspectItem {
   angle: string; // 实际角距离，两个星体真实经度的差 actualAngle 更适合
   orb: number;
   strength: 'strong' | 'normal';
-  window?: {
+  aspectTrend: 'Applying' | 'Separating'; // 入相 出相
+  window: {
     start: Date;
     exact: Date;
     end: Date;
@@ -186,7 +187,7 @@ class AspectPosition {
   }
 
   // 获取相位数据
-  public getData(planets: PlanetItem[], time?: Date) {
+  public getData(planets: PlanetItem[], time: Date) {
     const aspects: AspectItem[] = [];
 
     for (let i = 0; i < planets.length; i++) {
@@ -198,10 +199,7 @@ class AspectPosition {
         const aspect = this.getAspect(p1.name, p2.name, diff);
 
         if (aspect) {
-          const window =
-            typeof time === 'undefined'
-              ? undefined
-              : this.findAspectWindow(time, p1.name, p2.name, aspect.type);
+          const window = this.findAspectWindow(time, p1.name, p2.name, aspect.type);
           aspects.push({
             between: [p1.name, p2.name],
             type: aspect.type,
@@ -209,6 +207,7 @@ class AspectPosition {
             orb: aspect.orb,
             strength: aspect.orb < 1 ? 'strong' : 'normal',
             window,
+            aspectTrend: window.exact.getTime() > time.getTime() ? 'Applying' : 'Separating',
           });
         }
       }
@@ -403,6 +402,18 @@ class AspectPosition {
 
     return { start, exact, end, _t };
   }
+
+  // // 获取指定一年内所有相位
+  // public getYearAspectList(time: Date) {
+  //   const planetList = getAllPlanets(time);
+  //   const aspectData = this.getData(planetList, time);
+
+  //   console.log(
+  //     'aspectData',
+  //     aspectData.filter((i) => i.between.includes(Body.Sun))
+  //   );
+  //   // const next =
+  // }
 }
 
 export const aspectPosition = new AspectPosition();

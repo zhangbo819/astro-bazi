@@ -92,13 +92,9 @@
         <strong>{{ planetTexts[activeAspect.plant.name].short }}</strong>
         <h3>
           落在
-          <span
-            class="navText"
-            :style="{ color: map12[activeAspect.plant.sign].color }"
-            @click="onClickSign"
-            >{{ activeAspect.plant.sign }}
-            {{ map12[activeAspect.plant.sign].name }}
-          </span>
+          <SignText :name="activeAspect.plant.sign" class="navText" @click="onClickSign">
+            <template #prev>{{ activeAspect.plant.sign + ' ' }}</template>
+          </SignText>
           {{ map12[activeAspect.plant.sign].icon }}
           {{ activeAspect.plant.degree }}°
         </h3>
@@ -116,10 +112,10 @@
               }"
             >
               与
-              <span :style="{ color: planentsMap[item.other].color }"
-                >{{ item.other }} {{ planentsMap[item.other].name }}
-                {{ planentsMap[item.other].symbol }}</span
-              >
+              <PlanetText :name="item.other">
+                <template #prev>{{ item.other + ' ' }} </template>
+                {{ planentsMap[item.other].symbol }}
+              </PlanetText>
               成
               <span :style="{ color: aspectPosition.map[item.type].color }">
                 {{ item.type }}
@@ -129,6 +125,7 @@
               </span>
               &nbsp;
               <span> {{ item.strength }} ({{ item.orb }}°) </span>
+              <span>{{ item.aspectTrend === 'Applying' ? '入相' : '出相' }}</span>
             </span>
           </p>
         </div>
@@ -148,6 +145,8 @@ import { AspectItem, aspectPosition, PlanetItem } from '@/utils/astro/planets';
 import { map12, planentsMap, planetTexts, title12 } from '@/utils/astro/astroUI';
 import { useAvoidPlanetOverlap, useResetLongitude } from '../hooks';
 import router from '@/router';
+import SignText from './SignText.vue';
+import PlanetText from './PlanetText.vue';
 
 const props = defineProps<{ data: PlanetItem[]; aspectData: AspectItem[] }>();
 

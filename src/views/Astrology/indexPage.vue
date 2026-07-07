@@ -19,7 +19,7 @@
       </van-nav-bar>
 
       <!-- 星座盘 -->
-      <astro-round-plate :data="data" :aspectData="aspectData" />
+      <astro-round-plate :data="data" :aspectData="aspectDataNoWindow" />
 
       <!-- 操作栏 -->
       <h2>操作栏</h2>
@@ -83,9 +83,14 @@ const time = ref(storeAstro.time);
 const data = computed(() => {
   return getAllPlanets(time.value);
 });
-const aspectData = computed(() => {
-  return aspectPosition.getData(data.value);
+const aspectDataNoWindow = computed(() => {
+  return aspectPosition.getData(data.value, time.value);
 });
+
+// const yearAspectList = computed(() => {
+// return aspectPosition.getYearAspectList(time.value);
+// });
+// console.log(yearAspectList.value);
 
 const activeTab = ref(new Array(6).fill(0).map((_, i) => String(i + 1)));
 const onClickRight = () => {
