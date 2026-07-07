@@ -47,10 +47,10 @@
               }}</span>
             </template>
 
-            <p class="value" :style="{ color: map12[item.sign].color }">
-              {{ item.sign }} {{ map12[item.sign].name }}
+            <sign-text class="value" :name="item.sign">
+              <template #prev>{{ item.sign + ' ' }}</template>
               <span v-if="item.retrograde">R</span>
-            </p>
+            </sign-text>
 
             <p class="value">{{ item.degree }}°</p>
           </van-cell>
@@ -67,11 +67,12 @@ import { computed, ref } from 'vue';
 import router from '@/router';
 import { useAIStore } from '@/store/AI';
 import { getAllPlanets } from '@/utils/astro/planets';
-import { DignityMap, map12, planentsMap } from '@/utils/astro/astroUI';
+import { DignityMap, planentsMap } from '@/utils/astro/astroUI';
 import AstroOperation from '@/views/Workspace/Astrology/components/AstroOperation.vue';
 import AstroRoundPlate from '@/views/Workspace/Astrology/components/AstroRoundPlate.vue';
 import AIPopup from '@/components/AIPopup.vue';
 import { useAstroStore } from '@/store/astro';
+import SignText from '../Workspace/Astrology/components/SignText.vue';
 
 const storeAI = useAIStore();
 const storeAstro = useAstroStore();

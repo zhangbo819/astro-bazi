@@ -67,10 +67,10 @@
             }}</span>
           </template>
 
-          <p class="value" :style="{ color: map12[item.sign].color }">
-            {{ item.sign }} {{ map12[item.sign].name }}
+          <sign-text class="value" :name="item.sign">
+            <template #prev>{{ item.sign + ' ' }}</template>
             <span v-if="item.retrograde">R</span>
-          </p>
+          </sign-text>
           <p class="value">{{ item.degree }}°</p>
           <!-- <p class="bound" v-if="item.bound">
             界限：<span :style="{ color: planentsMap[item.bound].color }">{{
@@ -89,20 +89,18 @@
         <van-cell v-for="item in store.aspectData" :key="item.between.join('.')">
           <template #title>
             <p>
-              <span :style="{ color: planentsMap[item.between[0]].color }"
-                >{{ planentsMap[item.between[0]].symbol }}
-                {{ planentsMap[item.between[0]].name }}</span
-              >
+              <planet-text :name="item.between[0]">
+                <template #prev>{{ planentsMap[item.between[0]].symbol + ' ' }}</template>
+              </planet-text>
               <span class="mid-span" :style="{ color: aspectPosition.map[item.type].color }">
                 {{ aspectPosition.map[item.type].name }} {{ aspectPosition.map[item.type].symbol }}
               </span>
-              <span :style="{ color: planentsMap[item.between[1]].color }"
-                >{{ planentsMap[item.between[1]].name }}
-                {{ planentsMap[item.between[1]].symbol }}</span
-              >
+              <planet-text :name="item.between[1]">
+                {{ ' ' + planentsMap[item.between[1]].symbol }}
+              </planet-text>
             </p>
           </template>
-          <!-- <template #label>
+          <template #label>
             <p>
               {{ item.between[0] }}
               <span class="mid-span" :style="{ color: aspectPosition.map[item.type].color }">
@@ -110,30 +108,36 @@
               </span>
               {{ item.between[1] }}
             </p>
-          </template> -->
-          <!-- <p class="value" :style="{ color: aspectPosition.map[item.type].color }">
+          </template>
+          <p class="value" :style="{ color: aspectPosition.map[item.type].color }">
             {{ item.type }} {{ aspectPosition.map[item.type].name }}
-          </p> -->
+          </p>
           <p
             class="value"
             :style="{
               fontWeight: item.strength === 'strong' ? 'bold' : 'normal',
             }"
           >
-            {{ item.strength }} ({{ item.orb }}°)
+            <span>{{ item.strength }} ({{ item.orb }}°)</span>
           </p>
           <template v-if="item.window">
             <p class="value">
-              开始时间 {{ item.window.start.toLocaleDateString() }}
-              {{ item.window.start.getHours() }}:{{ item.window.start.getMinutes() }}
+              <span
+                >开始时间 {{ item.window.start.toLocaleDateString() }}
+                {{ item.window.start.getHours() }}:{{ item.window.start.getMinutes() }}</span
+              >
             </p>
             <p class="value">
-              力量最强 {{ item.window.exact.toLocaleDateString() }}
-              {{ item.window.exact.getHours() }}:{{ item.window.exact.getMinutes() }}
+              <span
+                >力量最强 {{ item.window.exact.toLocaleDateString() }}
+                {{ item.window.exact.getHours() }}:{{ item.window.exact.getMinutes() }}</span
+              >
             </p>
             <p class="value">
-              结束时间 {{ item.window.end.toLocaleDateString() }}
-              {{ item.window.end.getHours() }}:{{ item.window.end.getMinutes() }}
+              <span
+                >结束时间 {{ item.window.end.toLocaleDateString() }}
+                {{ item.window.end.getHours() }}:{{ item.window.end.getMinutes() }}</span
+              >
             </p>
             <i class="value">计算耗时 {{ item.window._t }} ms</i>
           </template>
@@ -147,8 +151,10 @@
 import { ref } from 'vue';
 import { useAstroStore } from '@/store/astro';
 import { aspectPosition } from '@/utils/astro/planets';
-import { DignityMap, map12, patternMap, planentsMap } from '@/utils/astro/astroUI';
+import { DignityMap, patternMap, planentsMap } from '@/utils/astro/astroUI';
 import AstroRoundPlate from '../components/AstroRoundPlate.vue';
+import PlanetText from '../components/PlanetText.vue';
+import SignText from '../components/SignText.vue';
 
 const store = useAstroStore();
 

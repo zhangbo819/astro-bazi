@@ -1,6 +1,6 @@
 <template>
   <span v-if="!textOnly" :style="{ color: planentsMap[name].color }"
-    >{{ planentsMap[name].name }}<slot />
+    ><slot name="prev" />{{ planentsMap[name].name }}<slot />
   </span>
   <template v-else>{{ planentsMap[name].name }}</template>
 </template>
