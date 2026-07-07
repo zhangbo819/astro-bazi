@@ -102,8 +102,10 @@
           {{ map12[activeAspect.plant.sign].icon }}
           {{ activeAspect.plant.degree }}°
         </h3>
+        <i>黄道经度：{{ activeAspect.plant.longitude.toFixed(2) }}°</i>
       </template>
       <template v-if="activeAspect.aspects.length">
+        <h3>相位关系</h3>
         <div v-for="(item, index) in activeAspect.aspects" :key="item.between.join('-')">
           <p>
             &nbsp;&nbsp;

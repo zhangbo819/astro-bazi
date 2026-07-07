@@ -145,17 +145,62 @@ export function useAvoidPlanetOverlap(data: Ref<PlanetItem[]>) {
     for (const group of groups) {
       const len = group.length;
 
+      const longitudeDiff =
+        Math.max(...group.map((i) => i.longitude)) - Math.min(...group.map((i) => i.longitude));
+      const minDiff = longitudeDiff / len;
+      const UI_FIX = 20; // 根据实际UI进行微调的值
+
+      // console.log('longitudeDiff, minDiff', longitudeDiff, minDiff);
+
       group.forEach((p, i) => {
         let rotation = 0;
 
+        // 默认位置：在左时字在更左，上时更上，按照真实位置往远离圆心处伸展
+        // 经度 longitude 和 角度 rotation 对应关系
+        // 0-90    180-270
+        // 90-180  270-0
+        // 180-270 0-90
+        // 270-360 90-180
+        rotation = p.longitude + 180;
+        if (rotation >= 360) {
+          rotation -= 360;
+        }
+
         if (len === 1) {
-          // 只有一个组时，在左侧时文字靠左，在右侧时文字靠右
-          rotation = p.longitude < 90 || p.longitude > 270 ? 180 : 0;
         } else {
+          // console.log('p', p.name, rotation);
+
           // 让 label 在一个小扇形内分散
-          const spread = 360; // 总展开角度
-          // 目前是将离得很近的编一个组，然后分配度数进行旋转
-          rotation = (spread / len) * (i + 1); // TODO 旋转逻辑再优化，旋转后仍有可能会遮挡
+          // const spread = 360; // 总展开角度
+          // // 目前是将离得很近的编一个组，然后分配度数进行旋转
+          // rotation = (spread / len) * (i + 1); // TODO 旋转逻辑再优化，旋转后仍有可能会遮挡
+
+          // const direction = p.longitude >= 0 && p.longitude < 180 ? 1 : -1; // 方向
+
+          // 离得很近时字会挡住，需要在原有基础上再分别错开几度
+          let offset = 0;
+          const mid = Math.floor(len / 2);
+          let index_offset = 0; // 在组内应该偏移的方向及比例
+
+          if (len % 2 === 0) {
+            // 偶数
+            if (i < mid - 1) {
+              index_offset = i - mid + 1;
+            } else if (i === mid - 1) {
+              index_offset = -0.5;
+            } else if (i === mid) {
+              index_offset = 0.5;
+            } else {
+              index_offset = i - mid;
+            }
+          } else {
+            // 奇数
+            index_offset = i - mid;
+          }
+          // console.log('index_offset', index_offset);
+          offset = minDiff * index_offset * UI_FIX;
+
+          rotation += offset;
         }
 
         result[p.name] = rotation;
@@ -170,7 +215,7 @@ export function useAvoidPlanetOverlap(data: Ref<PlanetItem[]>) {
     () => data.value,
     (val) => {
       const groups = groupClosePlanets(val);
-      // console.log("groups", groups);
+      // console.log('groups', groups);
       planentRota.value = applyLabelRotation(groups);
       // console.log(planentRota.value);
     },
