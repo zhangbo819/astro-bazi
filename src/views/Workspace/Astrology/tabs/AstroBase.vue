@@ -6,7 +6,7 @@
     <!-- 操作栏 -->
     <van-collapse-item name="5">
       <template #title> <h2>操作栏</h2></template>
-      <astro-operation v-model:time="store.time" />
+      <!-- <astro-operation v-model:time="store.time" /> -->
     </van-collapse-item>
     <!-- <van-cell-group inset>
       <van-cell title="时间" :value="store.time.toLocaleString()" />
