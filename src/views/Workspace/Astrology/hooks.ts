@@ -144,10 +144,11 @@ export function useAvoidPlanetOverlap(data: Ref<PlanetItem[]>) {
 
     for (const group of groups) {
       const len = group.length;
+      console.log(group);
 
-      const longitudeDiff =
-        Math.max(...group.map((i) => i.longitude)) - Math.min(...group.map((i) => i.longitude));
-      const minDiff = longitudeDiff / len;
+      // const longitudeDiff =
+      //   Math.max(...group.map((i) => i.longitude)) - Math.min(...group.map((i) => i.longitude));
+      const minDiff = 8 / len; // 始终用最大间距，8度为一组
       const UI_FIX = 20; // 根据实际UI进行微调的值
 
       // console.log('longitudeDiff, minDiff', longitudeDiff, minDiff);
