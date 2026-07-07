@@ -19,7 +19,7 @@
       </van-nav-bar>
 
       <!-- 星座盘 -->
-      <astro-round-plate :data="data" />
+      <astro-round-plate :data="data" :aspectData="aspectData" />
 
       <!-- 操作栏 -->
       <h2>操作栏</h2>
@@ -66,7 +66,7 @@
 import { computed, ref } from 'vue';
 import router from '@/router';
 import { useAIStore } from '@/store/AI';
-import { getAllPlanets } from '@/utils/astro/planets';
+import { aspectPosition, getAllPlanets } from '@/utils/astro/planets';
 import { DignityMap, planentsMap } from '@/utils/astro/astroUI';
 import AstroOperation from '@/views/Workspace/Astrology/components/AstroOperation.vue';
 import AstroRoundPlate from '@/views/Workspace/Astrology/components/AstroRoundPlate.vue';
@@ -82,6 +82,9 @@ const time = ref(storeAstro.time);
 
 const data = computed(() => {
   return getAllPlanets(time.value);
+});
+const aspectData = computed(() => {
+  return aspectPosition.getData(data.value);
 });
 
 const activeTab = ref(new Array(6).fill(0).map((_, i) => String(i + 1)));

@@ -149,7 +149,7 @@ import { map12, planentsMap, planetTexts, title12 } from '@/utils/astro/astroUI'
 import { useAvoidPlanetOverlap, useResetLongitude } from '../hooks';
 import router from '@/router';
 
-const props = defineProps<{ data: PlanetItem[] }>();
+const props = defineProps<{ data: PlanetItem[]; aspectData: AspectItem[] }>();
 
 // 解决在跨 360° 旋转时，CSS 会走 358°反方向动画
 const { css_longitude, disableTransition } = useResetLongitude(toRef(props, 'data'));
@@ -189,14 +189,12 @@ onUnmounted(() => {
 
 // 相位线数据
 const aspectLines = computed(() => {
-  const aspectData = aspectPosition.getData(props.data);
-
   const map = props.data.reduce((r, p) => {
     r[p.name] = aspectPosition.getPosition(p.longitude, svgPosition.value.r);
     return r;
   }, {} as Record<PlanetItem['name'], { x: number; y: number }>);
 
-  const res = aspectData.map((i) => {
+  const res = props.aspectData.map((i) => {
     const [n1, n2] = i.between;
 
     return {
@@ -224,9 +222,8 @@ const activeAspect = ref<{
 const onClickPlanent = (item: PlanetItem) => {
   // console.log(item);
   showPopup.value = true;
-  const aspectData = aspectPosition.getData(props.data);
 
-  const aspects = aspectData
+  const aspects = props.aspectData
     .filter((i) => i.between.includes(item.name))
     .map((i) => ({
       ...i,

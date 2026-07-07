@@ -1,6 +1,6 @@
 <template>
   <!-- 星座盘 -->
-  <astro-round-plate :data="store.planetList" />
+  <astro-round-plate :data="store.planetList" :aspectData="store.aspectData" />
 
   <van-collapse v-model="activeTab">
     <!-- 操作栏 -->

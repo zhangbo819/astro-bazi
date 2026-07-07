@@ -144,7 +144,7 @@ export function useAvoidPlanetOverlap(data: Ref<PlanetItem[]>) {
 
     for (const group of groups) {
       const len = group.length;
-      console.log(group);
+      // console.log(group);
 
       // const longitudeDiff =
       //   Math.max(...group.map((i) => i.longitude)) - Math.min(...group.map((i) => i.longitude));

@@ -135,6 +135,12 @@ export interface AspectItem {
   angle: string; // 实际角距离，两个星体真实经度的差 actualAngle 更适合
   orb: number;
   strength: 'strong' | 'normal';
+  window?: {
+    start: Date;
+    exact: Date;
+    end: Date;
+    _t: number;
+  };
 }
 class AspectPosition {
   ASPECTS = [
@@ -180,7 +186,7 @@ class AspectPosition {
   }
 
   // 获取相位数据
-  public getData(planets: PlanetItem[]) {
+  public getData(planets: PlanetItem[], time?: Date) {
     const aspects: AspectItem[] = [];
 
     for (let i = 0; i < planets.length; i++) {
@@ -192,12 +198,17 @@ class AspectPosition {
         const aspect = this.getAspect(p1.name, p2.name, diff);
 
         if (aspect) {
+          const window =
+            typeof time === 'undefined'
+              ? undefined
+              : this.findAspectWindow(time, p1.name, p2.name, aspect.type);
           aspects.push({
             between: [p1.name, p2.name],
             type: aspect.type,
             angle: diff.toFixed(2),
             orb: aspect.orb,
             strength: aspect.orb < 1 ? 'strong' : 'normal',
+            window,
           });
         }
       }

@@ -1,4 +1,4 @@
-import { computed, ref, shallowRef, watch } from 'vue';
+import { ref, shallowRef, watch } from 'vue';
 import { defineStore } from 'pinia';
 import { aspectPosition, getAllPlanets, PlanetItem } from '@/utils/astro/planets';
 import { AspectPatternEngine, ConjunctionGroup, Pattern } from '@/utils/astro/aspectPattern';
@@ -14,27 +14,19 @@ export const useAstroStore = defineStore('astro', () => {
     time.value = typeof v === 'number' ? new Date(v) : v;
   };
 
-  const planetList = computed(() => {
-    return getAllPlanets(time.value);
-  });
-
-  //   const planetMap = computed(() => Object.fromEntries(planetList.value.map((p) => [p.name, p])));
+  // 行星数据
+  const planetList = shallowRef(getAllPlanets(time.value));
+  watch(
+    () => time.value,
+    () => {
+      planetList.value = getAllPlanets(time.value);
+    }
+  );
 
   // 相位
-  // TODO shallowRef
-  const aspectData = computed(() => {
-    return aspectPosition.getData(planetList.value).map((i) => {
-      const window = aspectPosition.findAspectWindow(
-        time.value,
-        i.between[0],
-        i.between[1],
-        i.type
-      );
-      return {
-        ...i,
-        window,
-      };
-    });
+  const aspectData = shallowRef(aspectPosition.getData(planetList.value, time.value));
+  watch([() => planetList.value, () => time.value], () => {
+    aspectData.value = aspectPosition.getData(planetList.value, time.value);
   });
 
   // 格局
