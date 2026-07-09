@@ -207,7 +207,8 @@ class AspectPosition {
             orb: aspect.orb,
             strength: aspect.orb < 1 ? 'strong' : 'normal',
             window,
-            aspectTrend: window.exact.getTime() > time.getTime() ? 'Applying' : 'Separating',
+            // aspectTrend: window.exact.getTime() > time.getTime() ? 'Applying' : 'Separating',
+            aspectTrend: this.getAspectTrend(time, p1.name, p2.name, aspect.type),
           });
         }
       }
@@ -217,6 +218,50 @@ class AspectPosition {
     // aspects.sort((a, b) => a.orb - b.orb);
 
     return aspects;
+  }
+
+  // 获取一个相位的实际偏移量
+  private getActualOffset(
+    date: Date,
+    b1: PlanetItem['name'],
+    b2: PlanetItem['name'],
+    angle: number
+  ) {
+    const get = (d: Date) => PairLongitude(b1, b2, d);
+
+    let diff = get(date);
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    diff = Math.abs(diff);
+
+    return Math.abs(diff - angle);
+  }
+
+  // 获取入相/出相
+  private getAspectTrend(
+    date: Date,
+    b1: PlanetItem['name'],
+    b2: PlanetItem['name'],
+    aspect: Aspect
+  ): 'Applying' | 'Separating' {
+    const item = this.ASPECTS.find((i) => i.name === aspect);
+
+    const angle = item!.angle;
+    const orb = this.getDynamicOrb(b1, b2, item!.orb);
+
+    const stepMs = this.getDynamicStepMs(date, b1, b2, angle, orb); // TODO 这里有问题
+    console.log('stepMs', b1, b2, stepMs);
+
+    const nextTime = new Date(date.getTime() + stepMs);
+    console.log('now', date.toLocaleString());
+    console.log('nextTime', nextTime.toLocaleString());
+
+    const actualOffset = this.getActualOffset(date, b1, b2, angle);
+    const newActualOffset = this.getActualOffset(nextTime, b1, b2, angle);
+    console.log('actualOffset angle', actualOffset, newActualOffset);
+    console.log('\n');
+
+    return actualOffset > newActualOffset ? 'Applying' : 'Separating';
   }
 
   // 根据经度获取 x y，坐标原点为左上角，经度为 0 时坐标为 (0, R - r)
@@ -388,7 +433,6 @@ class AspectPosition {
     const _now = new Date(); // debug 计算用时
     const get = (d: Date) => PairLongitude(b1, b2, d);
 
-    // TODO 优化 use map
     const item = this.ASPECTS.find((i) => i.name === aspect);
 
     const actualAngle = item!.angle; // 实际夹角
