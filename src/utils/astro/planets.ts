@@ -135,14 +135,33 @@ export interface AspectItem {
   angle: string; // 实际角距离，两个星体真实经度的差 actualAngle 更适合
   orb: number;
   strength: 'strong' | 'normal';
-  aspectTrend: 'Applying' | 'Separating'; // 入相 出相
-  window: {
+  aspectTrend?: 'Applying' | 'Separating'; // 入相 出相
+  window?: {
     start: Date;
     exact: Date;
     end: Date;
     _t: number;
   };
 }
+
+export interface AstrologicalEvent {
+  between: AspectItem['between'];
+  planet: BodyInUse;
+  sign: Star;
+  other: BodyInUse;
+  other_sign: Star;
+  type: AspectItem['type'];
+  start: number;
+  end: number;
+  start_text: string;
+  end_text: string;
+}
+// type:
+//         | "aspect"
+//         | "signIngress"
+//         | "retrogradeStart"
+//         | "retrogradeEnd";
+
 class AspectPosition {
   ASPECTS = [
     { name: Aspect['Conjunction'], title: '合相', angle: 0, orb: 6 },
@@ -199,7 +218,10 @@ class AspectPosition {
         const aspect = this.getAspect(p1.name, p2.name, diff);
 
         if (aspect) {
-          const window = this.findAspectWindow(time, p1.name, p2.name, aspect.type);
+          const window =
+            typeof time === 'undefined'
+              ? undefined
+              : this.findAspectWindow(time, p1.name, p2.name, aspect.type);
           aspects.push({
             between: [p1.name, p2.name],
             type: aspect.type,
@@ -250,18 +272,73 @@ class AspectPosition {
     const orb = this.getDynamicOrb(b1, b2, item!.orb);
 
     const stepMs = this.getDynamicStepMs(date, b1, b2, angle, orb); // TODO 这里有问题
-    console.log('stepMs', b1, b2, stepMs);
+    // console.log('stepMs', b1, b2, stepMs);
 
     const nextTime = new Date(date.getTime() + stepMs);
-    console.log('now', date.toLocaleString());
-    console.log('nextTime', nextTime.toLocaleString());
+    // console.log('now', date.toLocaleString());
+    // console.log('nextTime', nextTime.toLocaleString());
 
     const actualOffset = this.getActualOffset(date, b1, b2, angle);
     const newActualOffset = this.getActualOffset(nextTime, b1, b2, angle);
-    console.log('actualOffset angle', actualOffset, newActualOffset);
-    console.log('\n');
+    // console.log('actualOffset angle', actualOffset, newActualOffset);
+    // console.log('\n');
 
     return actualOffset > newActualOffset ? 'Applying' : 'Separating';
+  }
+
+  private getData2(
+    planets: PlanetItem[],
+    includedPlanets: PlanetItem['name'][] | 'all',
+    memory: AstrologicalEvent[],
+    time: Date
+  ) {
+    const aspects: AspectItem[] = [];
+
+    for (let i = 0; i < planets.length; i++) {
+      const p1 = planets[i];
+      for (let j = i + 1; j < planets.length; j++) {
+        const p2 = planets[j];
+
+        if (
+          includedPlanets !== 'all' &&
+          !includedPlanets.includes(p1.name) &&
+          !includedPlanets.includes(p2.name)
+        ) {
+          break;
+        }
+
+        if (
+          memory.find(
+            (mItem) =>
+              mItem.between.includes(p1.name) &&
+              mItem.between.includes(p2.name) &&
+              mItem.start < time.getTime() &&
+              mItem.end > time.getTime()
+          )
+        ) {
+          break;
+        }
+
+        const diff = this.getAngleDiff(p1.longitude, p2.longitude);
+        const aspect = this.getAspect(p1.name, p2.name, diff);
+
+        if (aspect) {
+          const window = this.findAspectWindow(time, p1.name, p2.name, aspect.type);
+
+          aspects.push({
+            between: [p1.name, p2.name],
+            type: aspect.type,
+            angle: diff.toFixed(2),
+            orb: aspect.orb,
+            strength: aspect.orb < 1 ? 'strong' : 'normal',
+            window,
+            aspectTrend: window!.exact.getTime() > time.getTime() ? 'Applying' : 'Separating',
+          });
+        }
+      }
+    }
+
+    return aspects;
   }
 
   // 根据经度获取 x y，坐标原点为左上角，经度为 0 时坐标为 (0, R - r)
@@ -418,11 +495,6 @@ class AspectPosition {
     return new Date((left + right) / 2);
   }
 
-  // Applying / Separating 入相/出相
-  private isApplying(d1: number, d2: number, target: number) {
-    return Math.abs(d2 - target) < Math.abs(d1 - target);
-  }
-
   // 找某一个相位的 开始/结束时间
   public findAspectWindow(
     date: Date,
@@ -430,7 +502,7 @@ class AspectPosition {
     b2: PlanetItem['name'],
     aspect: Aspect
   ) {
-    const _now = new Date(); // debug 计算用时
+    const _now = Date.now(); // debug 计算用时
     const get = (d: Date) => PairLongitude(b1, b2, d);
 
     const item = this.ASPECTS.find((i) => i.name === aspect);
@@ -442,22 +514,103 @@ class AspectPosition {
     const end = this.findBoundary(date, b1, b2, get, actualAngle, orb, +1);
     const exact = this.findExact(start, end, get, actualAngle); // _useLog b1 === 'Sun' && b2 === 'Pluto'
 
-    const _t = Date.now() - _now.getTime(); // debug 用
+    const _t = Date.now() - _now; // debug 用
 
     return { start, exact, end, _t };
   }
 
-  // // 获取指定一年内所有相位
-  // public getYearAspectList(time: Date) {
-  //   const planetList = getAllPlanets(time);
-  //   const aspectData = this.getData(planetList, time);
+  // 查找准确换座时间
+  private getSignExactTime(planet: BodyInUse, t: Date, longitude: number) {
+    const stepMs = 24 * 60 * 60 * 1000;
 
-  //   console.log(
-  //     'aspectData',
-  //     aspectData.filter((i) => i.between.includes(Body.Sun))
-  //   );
-  //   // const next =
-  // }
+    const newPlanetItem = getPlanetInfo(planet, new Date(t.getTime() + stepMs));
+
+    const direction = newPlanetItem.longitude > longitude ? -1 : 1;
+
+    // 二分精确边界
+    let t1 = new Date(t.getTime() + direction * stepMs);
+    let t2 = t;
+
+    for (let i = 0; i < 20; i++) {
+      const mid = new Date((t1.getTime() + t2.getTime()) / 2);
+      // const hit = this.isAspectHit(get(mid), actualAngle, orb);
+      const hit = Math.floor(longitude / 30) * 30 - getPlanetInfo(planet, mid).longitude > 0;
+
+      if (hit) {
+        t1 = mid;
+      } else {
+        t2 = mid;
+      }
+    }
+
+    // console.log('t', t.toLocaleString());
+    // console.log('r', new Date((t1.getTime() + t2.getTime()) / 2).toLocaleString());
+
+    return new Date((t1.getTime() + t2.getTime()) / 2);
+  }
+
+  // 1 行星进入新的星座
+  // 2 开始逆行与结束逆行
+  // 3 获取指定一年内所有相位
+  public getAstrologicalEvents(time: Date) {
+    const res: AstrologicalEvent[] = [];
+    let current = new Date(time);
+    let _logTime = Date.now();
+    const ONE_DAY = 24 * 3600 * 1000;
+    const target_planet = Body.Sun;
+    let last_sign = null;
+
+    while (current.getTime() < time.getTime() + 3 * 30 * ONE_DAY) {
+      const planetList = getAllPlanets(current);
+      const target_planet_item = planetList.find((i) => i.name === target_planet)!;
+
+      // 1 行星进入新的星座
+      if (last_sign !== target_planet_item.sign) {
+        if (last_sign !== null) {
+          // fn 查找准确换座时间
+          const signExactTime = this.getSignExactTime(
+            target_planet,
+            current,
+            target_planet_item.longitude
+          );
+          console.log(target_planet, '换座', last_sign, signExactTime.toLocaleString());
+        }
+        last_sign = target_planet_item.sign;
+      }
+
+      // 2 开始逆行与结束逆行
+
+      // 3 获取指定一年内所有相位
+      // const aspectData = this.getData2(planetList, 'all', res, current);
+      const aspectData = this.getData2(planetList, [target_planet], res, current);
+      // console.log('aspectData', aspectData);
+
+      aspectData.forEach((item) => {
+        const sign = target_planet_item.sign;
+        const other = item.between.find((j) => j !== target_planet)!;
+        const other_sign = planetList.find((j) => j.name === other)!.sign;
+        res.push({
+          // current: current.getTime(),
+          between: item.between,
+          planet: target_planet,
+          sign,
+          other,
+          other_sign,
+          type: item.type,
+          start: item.window!.start.getTime(),
+          start_text: item.window!.start.toLocaleString(),
+          end: item.window!.end.getTime(),
+          end_text: item.window!.end.toLocaleString(),
+        });
+      });
+
+      current = new Date(current.getTime() + ONE_DAY);
+    }
+
+    console.log('耗时:', Date.now() - _logTime + ' ms');
+
+    return res;
+  }
 }
 
 export const aspectPosition = new AspectPosition();

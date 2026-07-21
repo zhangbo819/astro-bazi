@@ -59,26 +59,44 @@
     </van-collapse>
   </div>
 
+  <van-button @click="showAspectList">未来天象</van-button>
+  <div
+    v-for="item in yearAspectList"
+    :key="item.between.join('_') + item.start"
+    style="margin-top: 8px"
+  >
+    <p>
+      <PlanetText :name="item.planet">&nbsp;<SignText :name="item.sign" /></PlanetText>
+      <span class="mid-span" :style="{ color: aspectPosition.map[item.type].color }">
+        {{ ' ' + aspectPosition.map[item.type].name + ' ' }}
+      </span>
+      <PlanetText :name="item.other">&nbsp;<SignText :name="item.other_sign" /></PlanetText>
+    </p>
+    <p>{{ item.start_text }}</p>
+    <p>{{ item.end_text }}</p>
+  </div>
+
   <AIPopup />
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import router from '@/router';
 import { useAIStore } from '@/store/AI';
-import { aspectPosition, getAllPlanets } from '@/utils/astro/planets';
+import { aspectPosition, getAllPlanets, AstrologicalEvent } from '@/utils/astro/planets';
 import { DignityMap, planentsMap } from '@/utils/astro/astroUI';
 import AstroOperation from '@/views/Workspace/Astrology/components/AstroOperation.vue';
 import AstroRoundPlate from '@/views/Workspace/Astrology/components/AstroRoundPlate.vue';
 import AIPopup from '@/components/AIPopup.vue';
 import { useAstroStore } from '@/store/astro';
 import SignText from '../Workspace/Astrology/components/SignText.vue';
+import PlanetText from '../Workspace/Astrology/components/PlanetText.vue';
 
 const storeAI = useAIStore();
 const storeAstro = useAstroStore();
 // const time = ref(new Date('2013-07-29T04:30:00Z'));
 // const time = ref(new Date('2010-08-07T00:00:00Z'));
-const time = ref(storeAstro.time);
+const time = ref(storeAstro.time); // 从详情页过来时保留之前的时间
 
 const data = computed(() => {
   return getAllPlanets(time.value);
@@ -87,10 +105,11 @@ const aspectDataNoWindow = computed(() => {
   return aspectPosition.getData(data.value, time.value);
 });
 
-// const yearAspectList = computed(() => {
-// return aspectPosition.getYearAspectList(time.value);
-// });
-// console.log(yearAspectList.value);
+const yearAspectList = shallowRef<AstrologicalEvent[]>([]);
+const showAspectList = () => {
+  yearAspectList.value = aspectPosition.getAstrologicalEvents(time.value);
+  // console.log('yearAspectList.value', yearAspectList.value);
+};
 
 const activeTab = ref(new Array(6).fill(0).map((_, i) => String(i + 1)));
 const onClickRight = () => {
