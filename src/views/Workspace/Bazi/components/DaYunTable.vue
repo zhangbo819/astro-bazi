@@ -441,6 +441,7 @@ watch(
     () => activeLsIndex.value,
     () => activeLyIndex.value,
     () => store.paipanInfo,
+    () => store.onlyNian,
   ],
   () => {
     // // 初始化时不展示大运流年表

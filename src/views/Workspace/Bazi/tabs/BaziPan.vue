@@ -13,6 +13,9 @@
       />
       <van-cell :title="renderYinYangli(true)" />
       <van-cell :title="renderYinYangli()" />
+      <van-cell title="仅看年柱">
+        <van-switch v-model="store.onlyNian" />
+      </van-cell>
     </van-cell-group>
     <!-- :style="{ '--van-cell-value-color': store.sex === 0 ? '#6C8EBF' : '#D5A6BD' }" -->
     <van-action-sheet

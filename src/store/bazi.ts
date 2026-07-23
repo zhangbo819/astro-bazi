@@ -22,8 +22,9 @@ export const useBaziStore = defineStore('bazi', () => {
     pillarData.value = cb(pillarData.value);
     // console.log('pillarData.value', pillarData.value);
   };
+  const onlyNian = ref(false);
   watch(
-    () => paipanInfo.value,
+    [() => paipanInfo.value, () => onlyNian.value],
     () => {
       pillarData.value = Sizhu.map<PillarItem>((title, i) => {
         let zhuxing = paipanInfo.value.tenMap[paipanInfo.value.tg[i]];
@@ -46,7 +47,8 @@ export const useBaziStore = defineStore('bazi', () => {
             paipanInfo.value.bazi,
             paipanInfo.value.bazi[i],
             paipanInfo.value.yinli,
-            paipanInfo.value.gender
+            paipanInfo.value.gender,
+            onlyNian.value
           ),
         };
       });
@@ -84,7 +86,8 @@ export const useBaziStore = defineStore('bazi', () => {
         paipanInfo.value.bazi,
         name,
         paipanInfo.value.yinli,
-        paipanInfo.value.gender
+        paipanInfo.value.gender,
+        onlyNian.value
       ),
     };
     return dyItem;
@@ -118,5 +121,6 @@ export const useBaziStore = defineStore('bazi', () => {
     dialogTitle,
     dialogText,
     openDialog,
+    onlyNian,
   };
 });
