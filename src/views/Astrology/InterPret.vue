@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { generateInterpretation, title12 } from '@/utils/astro/astroUI';
+import { DignityMap, generateInterpretation, title12 } from '@/utils/astro/astroUI';
 import { BODIES, BodyInUse, Star } from '@/utils/astro/constant';
 import { renderMarkdown } from '@/utils/util';
 import { aspectPosition, getAllPlanets } from '@/utils/astro/planets';
@@ -58,7 +58,7 @@ const handleAI = () => {
   if (t) {
     const time = new Date(Number(t));
     const planetList = getAllPlanets(time);
-    dignity = planetList.find((i) => i.name === name)!.dignity;
+    dignity = DignityMap[planetList.find((i) => i.name === name)!.dignity].text;
     const aspectData = aspectPosition
       .getData(planetList, time)
       .filter((p) => p.between.includes(name as BodyInUse));
@@ -66,7 +66,9 @@ const handleAI = () => {
       aspectData.forEach((p) => {
         const otherName = p.between[0] === name ? p.between[1] : p.between[0];
         const otherSign = planetList.find((i) => i.name === otherName)?.sign;
-        aspect.push(`${name}:${sign} ${p.type} ${otherName}:${otherSign}(${p.aspectTrend})`);
+        aspect.push(
+          `${p.type} ${otherName}-${otherSign}(${p.aspectTrend === 'Applying' ? '入相' : '出相'})`
+        );
       });
     } else {
       aspect.push('空相');
