@@ -19,7 +19,7 @@
       </van-nav-bar>
 
       <!-- 星座盘 -->
-      <astro-round-plate :data="data" :aspectData="aspectDataNoWindow" />
+      <astro-round-plate :data="data" :aspectData="aspectDataNoWindow" :time="time" />
 
       <!-- 操作栏 -->
       <h2>操作栏</h2>

@@ -148,7 +148,7 @@ import router from '@/router';
 import SignText from './SignText.vue';
 import PlanetText from './PlanetText.vue';
 
-const props = defineProps<{ data: PlanetItem[]; aspectData: AspectItem[] }>();
+const props = defineProps<{ data: PlanetItem[]; aspectData: AspectItem[]; time: Date }>();
 
 // 解决在跨 360° 旋转时，CSS 会走 358°反方向动画
 const { css_longitude, disableTransition } = useResetLongitude(toRef(props, 'data'));
@@ -239,7 +239,7 @@ const onClickSign = () => {
 
   router.push({
     path: '/astrology/interpret',
-    query: { name, sign },
+    query: { t: props.time.getTime(), name, sign },
   });
 };
 </script>

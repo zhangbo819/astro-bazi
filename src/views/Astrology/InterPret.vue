@@ -24,6 +24,7 @@ import { useRoute } from 'vue-router';
 import { generateInterpretation, title12 } from '@/utils/astro/astroUI';
 import { BODIES, BodyInUse, Star } from '@/utils/astro/constant';
 import { renderMarkdown } from '@/utils/util';
+import { aspectPosition, getAllPlanets } from '@/utils/astro/planets';
 
 const route = useRoute();
 const loading = ref(false);
@@ -51,10 +52,33 @@ async function runInterpret(chart: Record<string, any> | Record<string, any>[]) 
 }
 
 const handleAI = () => {
-  const { name, sign } = route.query;
+  const { t, name, sign } = route.query;
+  let dignity = '';
+  const aspect = [];
+  if (t) {
+    const time = new Date(Number(t));
+    const planetList = getAllPlanets(time);
+    dignity = planetList.find((i) => i.name === name)!.dignity;
+    const aspectData = aspectPosition
+      .getData(planetList, time)
+      .filter((p) => p.between.includes(name as BodyInUse));
+    if (aspectData.length) {
+      aspectData.forEach((p) => {
+        const otherName = p.between[0] === name ? p.between[1] : p.between[0];
+        const otherSign = planetList.find((i) => i.name === otherName)?.sign;
+        aspect.push(`${name}:${sign} ${p.type} ${otherName}:${otherSign}(${p.aspectTrend})`);
+      });
+    } else {
+      aspect.push('空相');
+    }
+  }
+  // console.log('aspect', aspect);
+
   runInterpret({
     name,
     sign,
+    dignity,
+    aspect,
   });
 };
 
