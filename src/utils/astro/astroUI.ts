@@ -4,9 +4,9 @@ import { AstroElement, AstroModality, BodyInUse, Planent, Star } from './constan
 import { DignityStatus } from './dignity';
 
 export const AstroElementMap: Record<AstroElement, { name: string; color: string }> = {
-  Fire: { name: '火', color: '#FF5A5F' }, // 火：橙红（行动/能量）
-  Earth: { name: '土', color: '#C2B280' }, // 土：橄榄绿（稳定/现实）
-  Air: { name: '风', color: '#7BAFD4' }, // 风：清蓝（思维/交流）
+  Fire: { name: '火', color: '#f9383e' }, // 火：橙红（行动/能量）
+  Earth: { name: '土', color: '#7c6420' }, // 土：橄榄绿（稳定/现实）
+  Air: { name: '风', color: '#93cec5' }, // 风：清蓝（思维/交流）
   Water: { name: '水', color: '#4A6CF7' }, // 水：靛紫（情绪/直觉）
 };
 
@@ -27,9 +27,9 @@ export const planentsMap: Record<
   BodyInUse | Planent,
   { name: string; n?: string; color: string; symbol: string }
 > = {
-  Sun: { name: '太阳', n: '日', color: eColors.Fire, symbol: '☉' }, // 红色（太阳）
-  Moon: { name: '月亮', color: mixHexColors(eColors.Water, eColors.Earth, 0.33), symbol: '☾' }, // 月光蓝（情绪/柔和）
-  Mercury: { name: '水星', color: mixHexColors(eColors.Air, eColors.Earth), symbol: '☿' }, // 青绿色（思维/流动）
+  Sun: { name: '太阳', n: '日', color: mixHexColors(eColors.Fire, '#ff0000'), symbol: '☉' }, // 红色（太阳）
+  Moon: { name: '月亮', color: mixHexColors(eColors.Water, eColors.Earth, 0.22), symbol: '☾' }, // 月光蓝（情绪/柔和）
+  Mercury: { name: '水星', color: mixHexColors(eColors.Earth, eColors.Air), symbol: '☿' }, // 青绿色（思维/流动）
   Venus: {
     name: '金星',
     color: mixHexColors(mixHexColors(eColors.Air, eColors.Earth), eColors.Water),
@@ -37,11 +37,11 @@ export const planentsMap: Record<
   }, // 粉玫瑰（爱/美感）
   Mars: {
     name: '火星',
-    color: mixHexColors(mixHexColors(eColors.Fire, eColors.Water, 0.33), eColors.Earth),
+    color: mixHexColors(mixHexColors(eColors.Water, eColors.Fire), '#ff0000'),
     symbol: '♂',
   }, // 火红（行动力）
   Jupiter: { name: '木星', color: mixHexColors(eColors.Fire, eColors.Water, 0.67), symbol: '♃' }, // 紫色（扩张/幸运）
-  Saturn: { name: '土星', color: mixHexColors(eColors.Earth, eColors.Air, 0.33), symbol: '♄' }, // 深灰蓝（结构/限制）
+  Saturn: { name: '土星', color: mixHexColors(eColors.Earth, eColors.Air, 0.22), symbol: '♄' }, // 深灰蓝（结构/限制）
   Uranus: { name: '天王星', color: eColors.Air, symbol: '♅' }, // 电光青（变革）
   Neptune: { name: '海王星', color: mixHexColors(eColors.Water, '#000000', 0.1), symbol: '♆' }, // 深海蓝（幻想/灵性）
   Pluto: { name: '冥王星', color: mixHexColors(eColors.Water, '#000000', 0.3), symbol: '♇' }, // 深紫（转化/深层力量）
